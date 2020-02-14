@@ -8,7 +8,7 @@ import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
 import Profile from "../screens/Tabs/Profile";
-import MessagesLink from "../component/MessagesLink";
+import MessagesLink from "../components/MessagesLink";
 
 const stackFactory = (initialRoute, customConfig) =>
   createStackNavigator({

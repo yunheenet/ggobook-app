@@ -11,7 +11,7 @@ import { ThemeProvider } from "styled-components";
 import { ApolloProvider } from "@apollo/react-hooks";
 import apolloClientOptions from "./apollo";
 import styles from "./styles";
-import NavController from "./component/NavController";
+import NavController from "./components/NavController";
 import { AuthProvider } from "./AuthContext";
 
 export default function App() {
