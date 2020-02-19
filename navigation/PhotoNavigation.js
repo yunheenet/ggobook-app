@@ -47,16 +47,23 @@ export default createStackNavigator(
     PhotoTabs: {
       screen: PhotoTabs,
       navigationOptions: {
-        header: null
+        title: "Choose Photo",
+        headerBackTitle: null
       }
     },
-    UploadPhoto
+    UploadPhoto: {
+      screen: UploadPhoto,
+      navigationOptions: {
+        title: "Upload"
+      }
+    }
   },
   {
     defaultNavigationOptions: {
       headerStyle: {
         ...stackStyles
-      }
+      },
+      headerTintColor: styles.blackColor
     }
   }
 );
