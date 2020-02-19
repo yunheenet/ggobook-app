@@ -8,21 +8,44 @@ import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
 import Profile from "../screens/Tabs/Profile";
+import Detail from "../screens/Detail";
 import MessagesLink from "../components/MessagesLink";
 import { View } from "react-native";
 import NavIcon from "../components/NavIcon";
 import { stackStyles } from "./config";
+import styles from "../styles";
+import UserDetail from "../screens/UserDetail";
 
 const stackFactory = (initialRoute, customConfig) =>
-  createStackNavigator({
-    InitialRoute: {
-      screen: initialRoute,
-      navigationOptions: {
-        ...customConfig,
+  createStackNavigator(
+    {
+      InitialRoute: {
+        screen: initialRoute,
+        navigationOptions: {
+          ...customConfig
+        }
+      },
+      Detail: {
+        screen: Detail,
+        navigationOptions: {
+          title: "Photo"
+        }
+      },
+      UserDetail: {
+        screen: UserDetail,
+        navigationOptions: ({ navigation }) => ({
+          title: navigation.getParam("username")
+        })
+      }
+    },
+    {
+      defaultNavigationOptions: {
+        headerBackTitle: null,
+        headerTintColor: styles.blackColor,
         headerStyle: { ...stackStyles }
       }
     }
-  });
+  );
 
 export default createBottomTabNavigator(
   {
@@ -42,7 +65,7 @@ export default createBottomTabNavigator(
     },
     Search: {
       screen: stackFactory(Search, {
-        title: "Search"
+        headerBackTitle: null
       }),
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
@@ -107,6 +130,7 @@ export default createBottomTabNavigator(
     }
   },
   {
+    initialRouteName: "Profile",
     tabBarOptions: {
       showLabel: false,
       style: {

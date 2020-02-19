@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, RefreshControl } from "react-native";
 import styled from "styled-components";
-import Loader from "../../components/Loaders";
+import Loader from "../../components/Loader";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import Post from "../../components/Post";
