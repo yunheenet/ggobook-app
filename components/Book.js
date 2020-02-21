@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image } from "react-native";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withNavigation } from "react-navigation";
@@ -7,10 +7,9 @@ import constants from "../constants";
 
 const Container = styled.View`
   width: ${constants.width};
-  height: ${constants.height};
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-top: -20px;
 `;
 const Touchable = styled.TouchableOpacity``;
 const InfoContainer = styled.View`
@@ -58,11 +57,6 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
         </Caption>
         <Description>{description}</Description>
       </InfoContainer>
-      <ButtonContainer>
-        <Touchable>
-          <Button>등록</Button>
-        </Touchable>
-      </ButtonContainer>
     </Container>
   );
 };
