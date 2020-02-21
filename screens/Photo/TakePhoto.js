@@ -1,113 +1,50 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
-import { Camera } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
-import { Ionicons } from "@expo/vector-icons";
-import * as Permissions from "expo-permissions";
-import constants from "../../constants";
-import Loader from "../../components/Loader";
-import { TouchableOpacity, Platform } from "react-native";
-import styles from "../../styles";
-
-const View = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Icon = styled.View``;
-
-const Button = styled.View`
-  width: 80;
-  height: 80;
-  border-radius: 40px;
-  border: 10px solid ${styles.lightGreyColor};
-`;
+import React, { useState, useEffect } from "react";
+import { Text, View, StyleSheet, Button } from "react-native";
+import { BarCodeScanner } from "expo-barcode-scanner";
 
 export default ({ navigation }) => {
-  const cameraRef = useRef();
-  const [canTakePhoto, setCanTakePhoto] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [hasPermission, setHasPermission] = useState(false);
-  const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
-  const takePhoto = async () => {
-    if (!canTakePhoto) {
-      return;
-    }
-    try {
-      setCanTakePhoto(false);
-      const { uri } = await cameraRef.current.takePictureAsync({
-        quality: 1
-      });
-      const asset = await MediaLibrary.createAssetAsync(uri);
-      setCanTakePhoto(true);
-      navigation.navigate("UploadPhoto", { photo: asset });
-    } catch (e) {
-      console.log(e);
-      setCanTakePhoto(true);
-    }
-  };
-  const askPermission = async () => {
-    try {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
 
-      if (status === "granted") {
-        setHasPermission(true);
-      }
-    } catch (e) {
-      console.log(e);
-      setHasPermission(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const toggleType = () => {
-    if (cameraType === Camera.Constants.Type.front) {
-      setCameraType(Camera.Constants.Type.back);
-    } else {
-      setCameraType(Camera.Constants.Type.front);
-    }
-  };
   useEffect(() => {
-    askPermission();
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+
+      navigation.navigate("BookDetail", { isbn: "9788901080154" });
+    })();
   }, []);
+
+  const handleBarCodeScanned = async ({ type, isbn }) => {
+    setScanned(true);
+
+    navigation.navigate("BookDetail", isbn);
+  };
+
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   return (
-    <View>
-      {loading ? (
-        <Loader />
-      ) : hasPermission ? (
-        <>
-          <Camera
-            ref={cameraRef}
-            type={cameraType}
-            style={{
-              justifyContent: "flex-end",
-              padding: 15,
-              width: constants.width,
-              height: constants.height / 2
-            }}
-          >
-            <TouchableOpacity onPress={toggleType}>
-              <Icon>
-                <Ionicons
-                  name={
-                    Platform.OS === "ios"
-                      ? "ios-reverse-camera"
-                      : "md-reverse-camera"
-                  }
-                  size={32}
-                  color={"white"}
-                />
-              </Icon>
-            </TouchableOpacity>
-          </Camera>
-          <View>
-            <TouchableOpacity onPress={takePhoto} disabled={!canTakePhoto}>
-              <Button />
-            </TouchableOpacity>
-          </View>
-        </>
-      ) : null}
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "flex-end"
+      }}
+    >
+      <BarCodeScanner
+        barCodeTypes={[BarCodeScanner.Constants.BarCodeType.ean13]}
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style={StyleSheet.absoluteFillObject}
+      />
+
+      {scanned && (
+        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
+      )}
     </View>
   );
 };
