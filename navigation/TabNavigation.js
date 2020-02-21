@@ -8,8 +8,8 @@ import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
 import Profile from "../screens/Tabs/Profile";
-import Detail from "../screens/Detail";
-import MessagesLink from "../components/MessagesLink";
+import PostDetail from "../screens/PostDetail";
+import BookDetail from "../screens/BookDetail";
 import { View } from "react-native";
 import NavIcon from "../components/NavIcon";
 import { stackStyles } from "./config";
@@ -25,10 +25,16 @@ const stackFactory = (initialRoute, customConfig) =>
           ...customConfig
         }
       },
-      Detail: {
-        screen: Detail,
+      PostDetail: {
+        screen: PostDetail,
         navigationOptions: {
-          title: "Photo"
+          title: "Post"
+        }
+      },
+      BookDetail: {
+        screen: BookDetail,
+        navigationOptions: {
+          title: "Book"
         }
       },
       UserDetail: {
@@ -51,8 +57,7 @@ export default createBottomTabNavigator(
   {
     Home: {
       screen: stackFactory(Home, {
-        headerRight: <MessagesLink />,
-        headerTitle: <NavIcon name="logo-instagram" size={36} />
+        headerTitle: <NavIcon name="md-book" size={36} />
       }),
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
@@ -89,27 +94,6 @@ export default createBottomTabNavigator(
               Platform.OS === "ios"
                 ? "ios-add-circle-outline"
                 : "md-add-circle-outline"
-            }
-          />
-        )
-      }
-    },
-    Notifications: {
-      screen: stackFactory(Notifications, {
-        title: "Notifications"
-      }),
-      navigationOptions: {
-        tabBarIcon: ({ focused }) => (
-          <NavIcon
-            focused={focused}
-            name={
-              Platform.OS === "ios"
-                ? focused
-                  ? "ios-heart"
-                  : "ios-heart-empty"
-                : focused
-                ? "md-heart"
-                : "md-heart-empty"
             }
           />
         )

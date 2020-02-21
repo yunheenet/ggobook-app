@@ -26,20 +26,6 @@ const Caption = styled.Text`
 const Description = styled.Text`
   margin: 10px 0px;
 `;
-const ButtonContainer = styled.View`
-  flex-direction: column;
-  align-items: center;
-  background-color: #fafafa;
-  border-bottom-width: 2px;
-`;
-const Button = styled.Text`
-  width: ${constants.width}
-  height: 50px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 600;
-  margin: 5px 0px;
-`;
 
 const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
   return (

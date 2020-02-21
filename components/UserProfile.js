@@ -7,7 +7,7 @@ import styles from "../styles";
 import { Platform } from "react-native";
 import constants from "../constants";
 import SquarePhoto from "./SquarePhoto";
-import Post from "./Post";
+import SquareBook from "./SquareBook";
 
 const ProfileHeader = styled.View`
   padding: 20px;
@@ -19,11 +19,12 @@ const HeaderColumn = styled.View``;
 
 const ProfileStats = styled.View`
   flex-direction: row;
+  margin-top: 30px;
 `;
 
 const Stat = styled.View`
   align-items: center;
-  margin-left: 40px;
+  margin-right: 20px;
 `;
 
 const Bold = styled.Text`
@@ -37,7 +38,7 @@ const StatName = styled.Text`
 `;
 
 const ProfileMeta = styled.View`
-  margin-top: 10px;
+  margin: 0px 15px;
   padding-horizontal: 20px;
 `;
 
@@ -55,14 +56,19 @@ const Button = styled.View`
   align-items: center;
 `;
 
+const Square = styled.View`
+  flex-direction: row;
+`;
+
 const UserProfile = ({
+  fullName,
   avatar,
-  postsCount,
+  bio,
   followersCount,
   followingCount,
-  bio,
-  fullName,
-  posts
+  posts,
+  postsCount,
+  books
 }) => {
   const [isGrid, setIsGrid] = useState(true);
   const toggleGrid = () => setIsGrid(i => !i);
@@ -75,6 +81,10 @@ const UserProfile = ({
         />
         <HeaderColumn>
           <ProfileStats>
+            <Stat>
+              <Bold>{books.length}</Bold>
+              <StatName>Books</StatName>
+            </Stat>
             <Stat>
               <Bold>{postsCount}</Bold>
               <StatName>Posts</StatName>
@@ -100,7 +110,7 @@ const UserProfile = ({
             <Ionicons
               color={isGrid ? styles.black : styles.lightGreyColor}
               size={32}
-              name={Platform.OS === "ios" ? "ios-grid" : "md-grid"}
+              name={Platform.OS === "ios" ? "ios-book" : "md-book"}
             />
           </Button>
         </TouchableOpacity>
@@ -109,19 +119,16 @@ const UserProfile = ({
             <Ionicons
               color={!isGrid ? styles.black : styles.lightGreyColor}
               size={32}
-              name={Platform.OS === "ios" ? "ios-list" : "md-list"}
+              name={Platform.OS === "ios" ? "ios-photos" : "md-photos"}
             />
           </Button>
         </TouchableOpacity>
       </ButtonContainer>
-      {posts &&
-        posts.map(p =>
-          isGrid ? (
-            <SquarePhoto key={p.id} {...p} />
-          ) : (
-            <Post key={p.id} {...p} />
-          )
-        )}
+      <Square>
+        {isGrid
+          ? books && books.map(b => <SquareBook key={b.id} {...b} />)
+          : posts && posts.map(p => <SquarePhoto key={p.id} {...p} />)}
+      </Square>
     </View>
   );
 };
@@ -166,6 +173,18 @@ UserProfile.propTypes = {
       caption: PropTypes.string.isRequired,
       location: PropTypes.string,
       createdAt: PropTypes.string.isRequired
+    })
+  ),
+  books: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      isbn: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      author: PropTypes.string.isRequired,
+      publisher: PropTypes.string.isRequired,
+      coverSmallUrl: PropTypes.string.isRequired,
+      coverLargeUrl: PropTypes.string.isRequired,
+      description: PropTypes.string
     })
   )
 };

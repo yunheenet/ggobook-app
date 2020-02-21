@@ -28,6 +28,20 @@ export const POST_FRAGMENT = gql`
   }
 `;
 
+export const BOOK_FRAGMENT = gql`
+  fragment BookParts on Book {
+    id
+    isbn
+    title
+    author
+    publisher
+    coverSmallUrl
+    coverLargeUrl
+    description
+    createdAt
+  }
+`;
+
 export const USER_FRAGMENT = gql`
   fragment UserParts on User {
     id
@@ -43,6 +57,10 @@ export const USER_FRAGMENT = gql`
     posts {
       ...PostParts
     }
+    books {
+      ...BookParts
+    }
   }
   ${POST_FRAGMENT}
+  ${BOOK_FRAGMENT}
 `;
