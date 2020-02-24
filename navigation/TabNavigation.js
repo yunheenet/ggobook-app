@@ -7,6 +7,7 @@ import {
 import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
+import PhotoTabs from "../navigation/PhotoNavigation";
 import Profile from "../screens/Tabs/Profile";
 import PostDetail from "../screens/PostDetail";
 import BookDetail from "../screens/BookDetail";
@@ -82,10 +83,10 @@ export default createBottomTabNavigator(
       }
     },
     Add: {
-      screen: View,
+      screen: PhotoTabs,
       navigationOptions: {
-        tabBarOnPress: ({ navigation }) =>
-          navigation.navigate("PhotoNavigation"),
+        // tabBarOnPress: ({ navigation }) =>
+        //   navigation.navigate("PhotoNavigation"),
         tabBarIcon: ({ focused }) => (
           <NavIcon
             focused={focused}

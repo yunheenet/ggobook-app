@@ -28,17 +28,18 @@ const PhotoTabs = createMaterialTopTabNavigator(
     tabBarOptions: {
       indicatorStyle: {
         backgroundColor: styles.blackColor,
-        marginBottom: 20
+        marginBottom: 0
       },
       labelStyle: {
         color: styles.blackColor,
         fontWeight: "600"
       },
       style: {
-        paddingBottom: 20,
+        paddingBottom: 0,
         ...stackStyles
       }
-    }
+    },
+    backBehavior: "history"
   }
 );
 
@@ -47,8 +48,7 @@ export default createStackNavigator(
     PhotoTabs: {
       screen: PhotoTabs,
       navigationOptions: {
-        title: "Choose Photo",
-        headerBackTitle: null
+        title: "Choose Photo"
       }
     },
     UploadPhoto: {

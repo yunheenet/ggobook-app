@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import Loader from "../components/Loader";
-import Book from "../components/Book";
+import BookCard from "../components/BookCard";
 import { ScrollView } from "react-native";
 
 const ADD_BOOK = gql`
@@ -30,7 +30,7 @@ export default ({ navigation }) => {
       {loading ? (
         <Loader />
       ) : (
-        data && data.addBook && <Book {...data.addBook} />
+        data && data.addBook && <BookCard {...data.addBook} />
       )}
     </ScrollView>
   );

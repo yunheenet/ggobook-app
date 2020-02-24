@@ -4,8 +4,8 @@ import { withNavigation } from "react-navigation";
 import PropTypes from "prop-types";
 import constants from "../constants";
 
-const SquareBook = ({ navigation, id, coverSmallUrl }) => (
-  <TouchableOpacity onPress={() => navigation.navigate("BookDetail", { id })}>
+const SquareBook = ({ navigation, id, isbn, coverSmallUrl }) => (
+  <TouchableOpacity onPress={() => navigation.navigate("BookDetail", { isbn })}>
     <Image
       source={{ uri: coverSmallUrl }}
       style={{ width: constants.width / 3, height: constants.height / 6 }}
@@ -15,6 +15,7 @@ const SquareBook = ({ navigation, id, coverSmallUrl }) => (
 
 SquareBook.propTypes = {
   id: PropTypes.string.isRequired,
+  isbn: PropTypes.string.isRequired,
   coverSmallUrl: PropTypes.string.isRequired
 };
 

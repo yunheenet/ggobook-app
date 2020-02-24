@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import * as Permissions from "expo-permissions";
-import { Image, ScrollView, TouchableOpacity } from "react-native";
+import {
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  HeaderBackButton
+} from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
@@ -36,6 +41,7 @@ export default ({ navigation }) => {
   const changeSelected = photo => {
     setSelected(photo);
   };
+
   const getPhotos = async () => {
     try {
       const { assets } = await MediaLibrary.getAssetsAsync();
@@ -48,6 +54,7 @@ export default ({ navigation }) => {
       setLoading(false);
     }
   };
+
   const askPermission = async () => {
     try {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -60,12 +67,14 @@ export default ({ navigation }) => {
       setHasPermission(false);
     }
   };
+
   const handleSelected = () => {
     navigation.navigate("UploadPhoto", { photo: selected });
   };
   useEffect(() => {
     askPermission();
   }, []);
+
   return (
     <View>
       {loading ? (
@@ -75,7 +84,10 @@ export default ({ navigation }) => {
           {hasPermission ? (
             <>
               <Image
-                style={{ width: constants.width, height: constants.height / 2 }}
+                style={{
+                  width: constants.width,
+                  height: constants.height / 2.5
+                }}
                 source={{ uri: selected.uri }}
               />
 
