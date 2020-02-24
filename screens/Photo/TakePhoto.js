@@ -10,8 +10,6 @@ export default ({ navigation }) => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted");
-
-      navigation.navigate("BookDetail", { isbn: "9788901080154" });
     })();
   }, []);
 

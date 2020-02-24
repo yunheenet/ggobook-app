@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, RefreshControl } from "react-native";
+import { ScrollView, RefreshControl, StatusBar } from "react-native";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
 import { gql } from "apollo-boost";
@@ -64,6 +64,7 @@ export default () => {
         <RefreshControl refreshing={refreshing} onRefresh={refresh} />
       }
     >
+      <StatusBar barStyle="dark-content" />
       {loading ? (
         <Loader />
       ) : (
