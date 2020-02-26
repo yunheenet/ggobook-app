@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, Image } from "react-native";
 import {
   createBottomTabNavigator,
   createStackNavigator
@@ -58,7 +58,14 @@ export default createBottomTabNavigator(
   {
     Home: {
       screen: stackFactory(Home, {
-        headerTitle: <NavIcon name="md-book" size={36} />
+        //headerTitle: <NavIcon name="md-book" size={36} />
+        headerTitle: (
+          <Image
+            resizeMode={"contain"}
+            style={{ width: 80, height: 40 }}
+            source={require("../assets/logo.png")}
+          />
+        )
       }),
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
