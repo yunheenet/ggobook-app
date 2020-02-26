@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import Loader from "../components/Loader";
 import BookCard from "../components/BookCard";
 import { ScrollView } from "react-native";
@@ -18,19 +18,33 @@ const ADD_BOOK = gql`
   }
 `;
 
-export default ({ navigation }) => {
-  const [addBook, { loading, data }] = useMutation(ADD_BOOK);
+const BOOK_DETAIL = gql`
+  query seeFullBook($id: String!) {
+    seeFullBook(id: $id) {
+      data {
+        id
+        title
+        author
+        publisher
+        description
+        coverLargeUrl
+      }
+    }
+  }
+`;
 
-  useEffect(() => {
-    addBook({ variables: { isbn: navigation.getParam("isbn") } });
-  }, []);
+export default ({ navigation }) => {
+  const id = navigation.getParam("id");
+  const { loading, data } = useQuery(BOOK_DETAIL, {
+    variables: { id }
+  });
 
   return (
     <ScrollView>
       {loading ? (
         <Loader />
       ) : (
-        data && data.addBook && <BookCard {...data.addBook} />
+        data && data.seeFullBook.data && <BookCard {...data.seeFullBook.data} />
       )}
     </ScrollView>
   );

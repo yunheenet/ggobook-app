@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 import styles from "../styles";
 import { Platform } from "react-native";
 import constants from "../constants";
-import SquarePhoto from "./SquarePhoto";
 import SquareBook from "./SquareBook";
+import BookCardHeader from "./BookCardHeader";
 
 const ProfileHeader = styled.View`
   padding: 20px;
@@ -19,7 +19,7 @@ const HeaderColumn = styled.View``;
 
 const ProfileStats = styled.View`
   flex-direction: row;
-  margin-top: 30px;
+  margin-top: 20px;
 `;
 
 const Stat = styled.View`
@@ -59,6 +59,9 @@ const Button = styled.View`
 const Square = styled.View`
   flex-direction: row;
 `;
+const List = styled.View`
+  flex-direction: column;
+`;
 
 const UserProfile = ({
   fullName,
@@ -66,12 +69,11 @@ const UserProfile = ({
   bio,
   followersCount,
   followingCount,
-  posts,
-  postsCount,
   books
 }) => {
   const [isGrid, setIsGrid] = useState(true);
   const toggleGrid = () => setIsGrid(i => !i);
+
   return (
     <View>
       <ProfileHeader>
@@ -84,10 +86,6 @@ const UserProfile = ({
             <Stat>
               <Bold>{books.length}</Bold>
               <StatName>Books</StatName>
-            </Stat>
-            <Stat>
-              <Bold>{postsCount}</Bold>
-              <StatName>Posts</StatName>
             </Stat>
             <Stat>
               <Bold>{followersCount}</Bold>
@@ -124,18 +122,22 @@ const UserProfile = ({
           </Button>
         </TouchableOpacity>
       </ButtonContainer>
-      <Square>
-        {isGrid
-          ? books && books.map(b => <SquareBook key={b.id} {...b} />)
-          : posts && posts.map(p => <SquarePhoto key={p.id} {...p} />)}
-      </Square>
+      {isGrid ? (
+        <Square>
+          {books && books.map(b => <SquareBook key={b.id} {...b} />)}
+        </Square>
+      ) : (
+        <List>
+          {books && books.map(b => <BookCardHeader key={b.id} {...b} />)}
+        </List>
+      )}
     </View>
   );
 };
 
 UserProfile.propTypes = {
   id: PropTypes.string.isRequired,
-  avatar: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
   username: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   isFollowing: PropTypes.bool.isRequired,
@@ -143,48 +145,19 @@ UserProfile.propTypes = {
   bio: PropTypes.string.isRequired,
   followingCount: PropTypes.number.isRequired,
   followersCount: PropTypes.number.isRequired,
-  postsCount: PropTypes.number.isRequired,
-  posts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      user: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        avatar: PropTypes.string,
-        username: PropTypes.string.isRequired
-      }).isRequired,
-      files: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string.isRequired,
-          url: PropTypes.string.isRequired
-        })
-      ).isRequired,
-      likeCount: PropTypes.number.isRequired,
-      isLiked: PropTypes.bool.isRequired,
-      comments: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.string.isRequired,
-          text: PropTypes.string.isRequired,
-          user: PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            username: PropTypes.string.isRequired
-          }).isRequired
-        })
-      ).isRequired,
-      caption: PropTypes.string.isRequired,
-      location: PropTypes.string,
-      createdAt: PropTypes.string.isRequired
-    })
-  ),
   books: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
-      isbn: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      author: PropTypes.string.isRequired,
-      publisher: PropTypes.string.isRequired,
-      coverSmallUrl: PropTypes.string.isRequired,
-      coverLargeUrl: PropTypes.string.isRequired,
-      description: PropTypes.string
+      data: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        isbn: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        author: PropTypes.string.isRequired,
+        publisher: PropTypes.string.isRequired,
+        coverSmallUrl: PropTypes.string.isRequired,
+        coverLargeUrl: PropTypes.string.isRequired,
+        description: PropTypes.string
+      })
     })
   )
 };

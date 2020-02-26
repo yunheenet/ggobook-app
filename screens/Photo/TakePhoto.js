@@ -13,10 +13,14 @@ export default ({ navigation }) => {
     })();
   }, []);
 
-  const handleBarCodeScanned = async ({ type, isbn }) => {
+  const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
 
-    navigation.navigate("BookDetail", isbn);
+    if (data === undefined) {
+      alert("Please retry.");
+    } else {
+      navigation.navigate("AddBook", { data });
+    }
   };
 
   if (hasPermission === null) {

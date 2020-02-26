@@ -31,13 +31,16 @@ export const POST_FRAGMENT = gql`
 export const BOOK_FRAGMENT = gql`
   fragment BookParts on Book {
     id
-    isbn
-    title
-    author
-    publisher
-    coverSmallUrl
-    coverLargeUrl
-    description
+    data {
+      id
+      isbn
+      title
+      author
+      publisher
+      description
+      coverSmallUrl
+      coverLargeUrl
+    }
     createdAt
   }
 `;
@@ -47,20 +50,15 @@ export const USER_FRAGMENT = gql`
     id
     avatar
     username
+    bio
     fullName
     isFollowing
     isSelf
-    bio
     followingCount
     followersCount
-    postsCount
-    posts {
-      ...PostParts
-    }
     books {
       ...BookParts
     }
   }
-  ${POST_FRAGMENT}
   ${BOOK_FRAGMENT}
 `;

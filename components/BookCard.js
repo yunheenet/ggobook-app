@@ -57,11 +57,26 @@ const Button = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-const NoteContainer = styled.View``;
-const Note = styled.Text`
-  height: 30px;
+const DeleteButton = styled.TouchableOpacity`
+  background-color: ${props => props.theme.redColor};
+  padding: 10px;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: flex-end;
+  width: 80px;
 `;
-const NoteAdder = styled.View``;
+
+const NoteContainer = styled.View`
+  flex: 1;
+`;
+const Note = styled.Text`
+  min-height: 30px;
+  padding: 5px;
+  font-size: 16px;
+`;
+const NoteAdder = styled.View`
+  align-items: center;
+`;
 const NoteModal = styled.TextInput`
   background-color: white;
   margin-bottom: 10px;
@@ -83,18 +98,22 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
   };
 
   const toggleEditModal = (item, index) => {
-    console.log(item, index);
     note.onChange(item);
     setListIndex(index);
     setIsEditModalVisible(!isEditModalVisible);
   };
 
+  const deleteNote = () => {
+    const newData = [...listData];
+    const prevIndex = listData.findIndex(item => item.id === listIndex);
+    newData.splice(prevIndex, 1);
+    setListData(newData);
+    toggleEditModal();
+  };
+
   const editNote = () => {
     const newData = [...listData];
-    //const prevIndex = listData.findIndex(item => item.id === listIndex);
-    //newData.splice(prevIndex, 1);
     newData[listIndex] = note.value;
-    console.log(newData);
     setListData(newData);
     note.onChange("");
     toggleEditModal();
@@ -121,6 +140,7 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
           value={note.value}
           placeholder=" Add Note"
           multiline={true}
+          textAlignVertical={"top"}
           placeholderTextColor={styles.lightGreyColor}
         />
         <Button onPress={addNote}>
@@ -133,10 +153,14 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
           toggleEditModal();
         }}
       >
+        <DeleteButton onPress={deleteNote}>
+          {loading ? <ActivityIndicator color="white" /> : <Text>Delete </Text>}
+        </DeleteButton>
         <NoteModal
           onChangeText={note.onChange}
           value={note.value}
           multiline={true}
+          textAlignVertical={"top"}
           placeholderTextColor={styles.lightGreyColor}
         />
         <Button onPress={editNote}>
@@ -161,7 +185,7 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
           </InfoContainer>
         </BookCard>
         <Divider />
-        <NoteContainer style={{ flex: 1 }}>
+        <NoteContainer>
           <FlatList
             data={listData}
             renderItem={({ item, index }) => (
@@ -169,7 +193,7 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
                 <Note>{item}</Note>
               </TouchableOpacity>
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={index => index}
           />
           <NoteAdder>
             <TouchableOpacity onPress={toggleModal}>

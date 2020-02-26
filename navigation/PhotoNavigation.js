@@ -5,6 +5,7 @@ import {
 import SelectPhoto from "../screens/Photo/SelectPhoto";
 import TakePhoto from "../screens/Photo/TakePhoto";
 import UploadPhoto from "../screens/Photo/UploadPhoto";
+import AddBook from "../screens/Photo/AddBook";
 import { stackStyles } from "./config";
 import styles from "../styles";
 
@@ -55,6 +56,12 @@ export default createStackNavigator(
       screen: UploadPhoto,
       navigationOptions: {
         title: "Upload"
+      }
+    },
+    AddBook: {
+      screen: AddBook,
+      navigationOptions: {
+        title: "Add Book"
       }
     }
   },
