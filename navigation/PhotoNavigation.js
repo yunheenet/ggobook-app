@@ -11,16 +11,16 @@ import styles from "../styles";
 
 const PhotoTabs = createMaterialTopTabNavigator(
   {
-    SelectPhoto: {
-      screen: SelectPhoto,
-      navigationOptions: {
-        tabBarLabel: "Select"
-      }
-    },
+    // SelectPhoto: {
+    //   screen: SelectPhoto,
+    //   navigationOptions: {
+    //     tabBarLabel: "Select"
+    //   }
+    // },
     TakePhoto: {
       screen: TakePhoto,
       navigationOptions: {
-        tabBarLabel: "Take"
+        tabBarLabel: "Search ISBN Code"
       }
     }
   },
