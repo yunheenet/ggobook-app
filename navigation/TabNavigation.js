@@ -69,19 +69,19 @@ export default createBottomTabNavigator(
         )
       }
     },
-    Search: {
-      screen: stackFactory(Search, {
-        headerBackTitle: null
-      }),
-      navigationOptions: {
-        tabBarIcon: ({ focused }) => (
-          <NavIcon
-            focused={focused}
-            name={Platform.OS === "ios" ? "ios-search" : "md-search"}
-          />
-        )
-      }
-    },
+    // Search: {
+    //   screen: stackFactory(Search, {
+    //     headerBackTitle: null
+    //   }),
+    //   navigationOptions: {
+    //     tabBarIcon: ({ focused }) => (
+    //       <NavIcon
+    //         focused={focused}
+    //         name={Platform.OS === "ios" ? "ios-search" : "md-search"}
+    //       />
+    //     )
+    //   }
+    // },
     Add: {
       screen: PhotoTabs,
       navigationOptions: {
