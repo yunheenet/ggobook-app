@@ -4,34 +4,25 @@ import styled from "styled-components";
 import Loader from "../../components/Loader";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
-import Post from "../../components/Post";
+import Feed from "../../components/Feed";
 
-const FEED_QUERY = gql`
+const BOOK_FEED = gql`
   {
-    seeFeed {
+    bookFeed {
       id
-      location
       caption
+      data {
+        id
+        title
+        author
+        coverLargeUrl
+      }
+      createdAt
       user {
         id
         avatar
         username
       }
-      files {
-        id
-        url
-      }
-      likeCount
-      isLiked
-      comments {
-        id
-        text
-        user {
-          id
-          username
-        }
-      }
-      createdAt
     }
   }
 `;
@@ -46,7 +37,8 @@ const Text = styled.Text``;
 
 export default () => {
   const [refreshing, setRefreshing] = useState(false);
-  const { loading, data, refetch } = useQuery(FEED_QUERY);
+  const { loading, data, refetch } = useQuery(BOOK_FEED);
+
   const refresh = async () => {
     try {
       setRefreshing(true);
@@ -69,8 +61,8 @@ export default () => {
         <Loader />
       ) : (
         data &&
-        data.seeFeed &&
-        data.seeFeed.map(post => <Post key={post.id} {...post} />)
+        data.bookFeed &&
+        data.bookFeed.map(feed => <Feed key={feed.id} {...feed} />)
       )}
     </ScrollView>
   );

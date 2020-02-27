@@ -75,8 +75,8 @@ BookCardHeader.propTypes = {
   data: PropTypes.shape({
     title: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired,
-    publisher: PropTypes.string.isRequired,
-    description: PropTypes.string,
+    //publisher: PropTypes.string.isRequired,
+    //description: PropTypes.string,
     coverSmallUrl: PropTypes.string.isRequired,
     coverLargeUrl: PropTypes.string.isRequired
   })
