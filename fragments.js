@@ -41,6 +41,10 @@ export const BOOK_FRAGMENT = gql`
       coverSmallUrl
       coverLargeUrl
     }
+    memos {
+      id
+      text
+    }
     createdAt
   }
 `;

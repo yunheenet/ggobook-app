@@ -10,11 +10,9 @@ const GET_USER = gql`
   query seeUser($username: String!) {
     seeUser(username: $username) {
       ...UserParts
-      ...BookParts
     }
   }
   ${USER_FRAGMENT}
-  ${BOOK_FRAGMENT}
 `;
 
 export default ({ navigation }) => {

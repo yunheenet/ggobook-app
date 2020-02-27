@@ -52,7 +52,7 @@ const ButtonContainer = styled.View`
 `;
 
 const Button = styled.View`
-  width: ${constants.width / 2};
+  width: ${constants.width / 2}px;
   align-items: center;
 `;
 

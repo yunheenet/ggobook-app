@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, Image } from "react-native";
+import { Platform, Image, Button } from "react-native";
 import {
   createBottomTabNavigator,
   createStackNavigator

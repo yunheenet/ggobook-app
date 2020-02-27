@@ -27,7 +27,7 @@ const Location = styled.Text`
   font-size: 12px;
 `;
 const BookContainer = styled.View`
-  width: ${constants.width}
+  width: ${constants.width}px;
   flex-direction: column;
   align-items: center;
   background-color: white;
@@ -49,7 +49,7 @@ const BookCard = styled.View`
 const Title = styled.Text`
   margin: 10px;
   font-weight: 500;
-  font-size: 18;
+  font-size: 18px;
   height: 45px;
   overflow: hidden;
 `;
@@ -76,13 +76,21 @@ const Feed = ({ id, caption, data, user, navigation }) => {
   return (
     <Container>
       <Header>
-        <Touchable>
+        <Touchable
+          onPress={() =>
+            navigation.navigate("UserDetail", { username: user.username })
+          }
+        >
           <Image
             style={{ height: 40, width: 40, borderRadius: 20 }}
             source={{ uri: user.avatar }}
           />
         </Touchable>
-        <Touchable>
+        <Touchable
+          onPress={() =>
+            navigation.navigate("UserDetail", { username: user.username })
+          }
+        >
           <HeaderUserContainer>
             <Bold>{user.username}</Bold>
             <Location>{user.username}</Location>

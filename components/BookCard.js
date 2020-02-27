@@ -1,15 +1,56 @@
 import React, { useState } from "react";
-import { Image, Platform, TouchableOpacity, Text } from "react-native";
+import {
+  Image,
+  Platform,
+  TouchableOpacity,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView
+} from "react-native";
 import styled from "styled-components";
 import styles from "../styles";
 import PropTypes from "prop-types";
 import { withNavigation } from "react-navigation";
 import Divider from "../components/Divider";
 import { Ionicons } from "@expo/vector-icons";
-import { FlatList, TextInput } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
 import constants from "../constants";
 import useInput from "../hooks/useInput";
+import { gql } from "apollo-boost";
+import { useMutation, useQuery } from "@apollo/react-hooks";
+import { ME } from "../screens/Tabs/Profile";
+import { BOOK_DETAIL } from "../screens/BookDetail";
+
+const DELETE_BOOK = gql`
+  mutation deleteBook($id: String!) {
+    deleteBook(id: $id)
+  }
+`;
+
+const ADD_BOOK_MEMO = gql`
+  mutation addBookMemo($bookId: String!, $text: String!) {
+    addBookMemo(bookId: $bookId, text: $text) {
+      id
+    }
+  }
+`;
+
+const EDIT_BOOK_MEMO = gql`
+  mutation editBookMemo($memoId: String!, $text: String!) {
+    editBookMemo(memoId: $memoId, text: $text) {
+      id
+    }
+  }
+`;
+
+const DELETE_BOOK_MEMO = gql`
+  mutation deleteBookMemo($memoId: String!) {
+    deleteBookMemo(memoId: $memoId) {
+      id
+    }
+  }
+`;
 
 const View = styled.View``;
 
@@ -36,13 +77,16 @@ const InfoContainer = styled.View`
 const Title = styled.Text`
   margin: 10px;
   font-weight: 500;
-  font-size: 18;
+  font-size: 18px;
   height: 45px;
   overflow: hidden;
 `;
 
 const Caption = styled.Text`
+  width: ${constants.width - 150}px;
   padding: 0 10px 0 0;
+  text-align: right;
+  overflow: hidden;
 `;
 
 const Description = styled.Text`
@@ -60,17 +104,19 @@ const Button = styled.TouchableOpacity`
 const DeleteButton = styled.TouchableOpacity`
   background-color: ${props => props.theme.redColor};
   padding: 10px;
+  margin: 10px;
   border-radius: 4px;
   align-items: center;
   justify-content: flex-end;
-  width: 80px;
+  height: 40px;
 `;
 
 const NoteContainer = styled.View`
   flex: 1;
 `;
 const Note = styled.Text`
-  min-height: 30px;
+  min-height: 35px;
+  text-align: center;
   padding: 5px;
   font-size: 16px;
 `;
@@ -85,46 +131,141 @@ const NoteModal = styled.TextInput`
   padding-bottom: 10px;
 `;
 
-const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
-  const [listData, setListData] = useState([]);
+const Book = ({
+  id: bookId,
+  data: { id, title, author, publisher, description, coverLargeUrl },
+  memos = [],
+  createdAt,
+  isMyBook,
+  navigation
+}) => {
+  const note = useInput("");
+
+  const [loading, setLoading] = useState(false);
+  const [listData, setListData] = useState(memos);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isDeleteBookModalVisible, setIsDeleteBookModalVisible] = useState(
+    false
+  );
   const [listIndex, setListIndex] = useState(0);
-  const [loading, setIsLoading] = useState(false);
-  const note = useInput("");
+  const [memoId, setMemoId] = useState("");
+
+  const [deleteBookMutation] = useMutation(DELETE_BOOK, {
+    variables: { id: bookId },
+    refetchQueries: () => [{ query: ME }]
+  });
+
+  const [addBookMemoMutation] = useMutation(ADD_BOOK_MEMO);
+  const [editBookMemoMutation] = useMutation(EDIT_BOOK_MEMO);
+  const [deleteBookMemoMutation] = useMutation(DELETE_BOOK_MEMO);
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const toggleEditModal = (item, index) => {
-    note.onChange(item);
+  const toggleEditModal = (text, index, id) => {
+    note.onChange(text);
     setListIndex(index);
+    setMemoId(id);
     setIsEditModalVisible(!isEditModalVisible);
   };
 
-  const deleteNote = () => {
+  const toggleDeleteBookModal = () => {
+    setIsDeleteBookModalVisible(!isDeleteBookModalVisible);
+  };
+
+  const handleDeleteBook = async () => {
+    const {
+      data: { deleteBook }
+    } = await deleteBookMutation();
+
+    if (deleteBook === true) {
+      navigation.pop();
+      navigation.navigate("Profile");
+    } else {
+      alert("Fail");
+    }
+  };
+
+  const initialtizeNote = () => {
+    note.onChange("");
+  };
+
+  const handleAddMemo = async text => {
+    setLoading(true);
+    const newData = [...listData];
+    newData.push({ text: text });
+    setListData(newData);
+
+    try {
+      await addBookMemoMutation({
+        variables: { bookId, text },
+        refetchQueries: [
+          {
+            query: BOOK_DETAIL,
+            variables: { id: bookId }
+          }
+        ]
+      });
+    } catch {
+      alert("please retry.");
+    }
+
+    initialtizeNote();
+    setLoading(false);
+    toggleModal();
+  };
+
+  const handleEditMemo = async text => {
+    setLoading(true);
+    const newData = [...listData];
+    newData[listIndex].text = text;
+    setListData(newData);
+
+    try {
+      await editBookMemoMutation({
+        variables: { memoId, text },
+        refetchQueries: [
+          {
+            query: BOOK_DETAIL,
+            variables: { id: bookId }
+          }
+        ]
+      });
+    } catch {
+      alert("please retry.");
+    }
+
+    note.onChange("");
+    setLoading(false);
+    toggleEditModal();
+  };
+
+  const handleDeleteMemo = async () => {
+    setLoading(true);
+
     const newData = [...listData];
     const prevIndex = listData.findIndex(item => item.id === listIndex);
     newData.splice(prevIndex, 1);
     setListData(newData);
-    toggleEditModal();
-  };
 
-  const editNote = () => {
-    const newData = [...listData];
-    newData[listIndex] = note.value;
-    setListData(newData);
-    note.onChange("");
-    toggleEditModal();
-  };
+    try {
+      await deleteBookMemoMutation({
+        variables: { memoId },
+        refetchQueries: [
+          {
+            query: BOOK_DETAIL,
+            variables: { id: bookId }
+          }
+        ]
+      });
+    } catch {
+      alert("please retry.");
+    }
 
-  const addNote = () => {
-    const newData = [...listData];
-    newData.push(note.value);
-    setListData(newData);
-    note.onChange("");
-    toggleModal();
+    setLoading(false);
+    toggleEditModal();
   };
 
   return (
@@ -132,7 +273,7 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={() => {
-          toggleModal();
+          loading ? null : toggleModal();
         }}
       >
         <NoteModal
@@ -143,17 +284,19 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
           textAlignVertical={"top"}
           placeholderTextColor={styles.lightGreyColor}
         />
-        <Button onPress={addNote}>
-          {loading ? <ActivityIndicator color="white" /> : <Text>Add </Text>}
-        </Button>
+        {
+          <Button disabled={loading} onPress={() => handleAddMemo(note.value)}>
+            {loading ? <ActivityIndicator color="white" /> : <Text>Add </Text>}
+          </Button>
+        }
       </Modal>
       <Modal
         isVisible={isEditModalVisible}
         onBackdropPress={() => {
-          toggleEditModal();
+          loading ? undefined : toggleEditModal();
         }}
       >
-        <DeleteButton onPress={deleteNote}>
+        <DeleteButton disabled={loading} onPress={handleDeleteMemo}>
           {loading ? <ActivityIndicator color="white" /> : <Text>Delete </Text>}
         </DeleteButton>
         <NoteModal
@@ -163,9 +306,23 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
           textAlignVertical={"top"}
           placeholderTextColor={styles.lightGreyColor}
         />
-        <Button onPress={editNote}>
+        <Button disabled={loading} onPress={() => handleEditMemo(note.value)}>
           {loading ? <ActivityIndicator color="white" /> : <Text>Edit </Text>}
         </Button>
+      </Modal>
+      <Modal
+        isVisible={isDeleteBookModalVisible}
+        onBackdropPress={() => {
+          loading ? undefined : toggleDeleteBookModal();
+        }}
+      >
+        <DeleteButton disabled={loading} onPress={handleDeleteBook}>
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text>삭제하시겠어요? </Text>
+          )}
+        </DeleteButton>
       </Modal>
       <BookContainer>
         <BookCard>
@@ -179,34 +336,49 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
           />
           <InfoContainer>
             <Title>{title}</Title>
-            <Caption>
-              {author}, {publisher}
-            </Caption>
+            <Caption>{author}</Caption>
+            <Caption>{publisher}</Caption>
+            {isMyBook ? (
+              <DeleteButton onPress={toggleDeleteBookModal}>
+                <Ionicons
+                  size={24}
+                  name={Platform.OS === "ios" ? "ios-trash" : "md-trash"}
+                />
+              </DeleteButton>
+            ) : (
+              undefined
+            )}
           </InfoContainer>
         </BookCard>
         <Divider />
         <NoteContainer>
-          <FlatList
-            data={listData}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => toggleEditModal(item, index)}>
-                <Note>{item}</Note>
+          <SafeAreaView>
+            <FlatList
+              data={listData}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  onPress={() => toggleEditModal(item.text, index, item.id)}
+                >
+                  <Note>{item.text}</Note>
+                  <Divider />
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              scrollEnabled={false}
+            />
+            <NoteAdder>
+              <TouchableOpacity onPress={toggleModal}>
+                <Ionicons
+                  size={32}
+                  name={
+                    Platform.OS === "ios"
+                      ? "ios-add-circle-outline"
+                      : "md-add-circle-outline"
+                  }
+                />
               </TouchableOpacity>
-            )}
-            keyExtractor={index => index}
-          />
-          <NoteAdder>
-            <TouchableOpacity onPress={toggleModal}>
-              <Ionicons
-                size={32}
-                name={
-                  Platform.OS === "ios"
-                    ? "ios-add-circle-outline"
-                    : "md-add-circle-outline"
-                }
-              />
-            </TouchableOpacity>
-          </NoteAdder>
+            </NoteAdder>
+          </SafeAreaView>
         </NoteContainer>
       </BookContainer>
     </View>
@@ -215,11 +387,22 @@ const Book = ({ id, title, author, publisher, description, coverLargeUrl }) => {
 
 Book.propTypes = {
   id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  publisher: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  coverLargeUrl: PropTypes.string
+  data: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    publisher: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    coverLargeUrl: PropTypes.string
+  }),
+  memos: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired
+    })
+  ),
+  createdAt: PropTypes.string,
+  isMyBook: PropTypes.bool.isRequired
 };
 
 export default withNavigation(Book);
