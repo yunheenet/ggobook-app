@@ -1,5 +1,5 @@
 const options = {
-  uri: "http://192.168.0.6:4000"
+  uri: "https://ggobook-backend.herokuapp.com/"
 };
 
 export default options;
