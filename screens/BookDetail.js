@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React from "react";
 import { gql } from "apollo-boost";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import Loader from "../components/Loader";
 import BookCard from "../components/BookCard";
 import { ScrollView, Button } from "react-native";
 
-export const BOOK_DETAIL = gql`
+const BOOK_DETAIL = gql`
   query seeFullBook($id: String!) {
     seeFullBook(id: $id) {
       id
