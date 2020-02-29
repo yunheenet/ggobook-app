@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, RefreshControl, StatusBar } from "react-native";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
@@ -6,7 +6,7 @@ import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import Feed from "../../components/Feed";
 
-const BOOK_FEED = gql`
+export const BOOK_FEED = gql`
   {
     bookFeed {
       id
@@ -49,6 +49,10 @@ export default () => {
       setRefreshing(false);
     }
   };
+
+  useEffect(() => {
+    refresh();
+  }, []);
 
   return (
     <ScrollView

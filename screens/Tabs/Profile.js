@@ -30,6 +30,10 @@ export default ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    refresh();
+  }, []);
+
   return (
     <ScrollView
       refreshControl={
