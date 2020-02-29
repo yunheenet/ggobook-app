@@ -10,9 +10,10 @@ import { gql } from "apollo-boost";
 import styled from "styled-components";
 import styles from "../../styles";
 import constants from "../../constants";
-import { ME } from "../Tabs/Profile";
 import Loader from "../../components/Loader";
 import Divider from "../../components/Divider";
+import { ME } from "../Tabs/Profile";
+import { BOOK_FEED } from "../Tabs/Home";
 
 const POST_BOOK = gql`
   mutation postBook($bookId: String!) {
@@ -93,17 +94,17 @@ export default ({ navigation }) => {
     variables: { isbn: navigation.getParam("data") }
   });
 
-  const [postBookMutation] = useMutation(POST_BOOK, {
-    refetchQueries: () => [{ query: ME }]
-  });
+  const [postBookMutation] = useMutation(POST_BOOK);
 
   const handlePostBook = async () => {
+    setIsLoading(true);
     const {
       data: { postBook }
     } = await postBookMutation({
       variables: { bookId: data.findGgoBook.id }
     });
 
+    setIsLoading(false);
     if (postBook === true) {
       navigation.pop();
       navigation.navigate("Profile");
