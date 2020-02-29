@@ -20,7 +20,6 @@ import useInput from "../hooks/useInput";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { ME } from "../screens/Tabs/Profile";
-import { BOOK_DETAIL } from "../screens/BookDetail";
 
 const DELETE_BOOK = gql`
   mutation deleteBook($id: String!) {
@@ -48,6 +47,28 @@ const DELETE_BOOK_MEMO = gql`
   mutation deleteBookMemo($memoId: String!) {
     deleteBookMemo(memoId: $memoId) {
       id
+    }
+  }
+`;
+
+const BOOK_DETAIL = gql`
+  query seeFullBook($id: String!) {
+    seeFullBook(id: $id) {
+      id
+      data {
+        id
+        title
+        author
+        publisher
+        description
+        coverLargeUrl
+      }
+      memos {
+        id
+        text
+      }
+      createdAt
+      isMyBook
     }
   }
 `;
