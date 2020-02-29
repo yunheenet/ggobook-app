@@ -1,21 +1,21 @@
 import React from "react";
-import { Platform, Image, Button } from "react-native";
+import { Platform, Image, View } from "react-native";
 import {
   createBottomTabNavigator,
   createStackNavigator
 } from "react-navigation";
+import PhotoTabs from "../navigation/PhotoNavigation";
 import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
-import PhotoTabs from "../navigation/PhotoNavigation";
 import Profile from "../screens/Tabs/Profile";
 import PostDetail from "../screens/PostDetail";
 import BookDetail from "../screens/BookDetail";
-import { View } from "react-native";
+import UserDetail from "../screens/UserDetail";
 import NavIcon from "../components/NavIcon";
+import Logout from "../components/Logout";
 import { stackStyles } from "./config";
 import styles from "../styles";
-import UserDetail from "../screens/UserDetail";
 
 const stackFactory = (initialRoute, customConfig) =>
   createStackNavigator(
@@ -62,7 +62,7 @@ export default createBottomTabNavigator(
         headerTitle: (
           <Image
             resizeMode={"contain"}
-            style={{ width: 80, height: 40 }}
+            style={{ width: 60, height: 30 }}
             source={require("../assets/logo.png")}
           />
         )
@@ -109,7 +109,8 @@ export default createBottomTabNavigator(
     },
     Profile: {
       screen: stackFactory(Profile, {
-        title: "Profile"
+        title: "Profile",
+        headerRight: <Logout />
       }),
       navigationOptions: {
         tabBarIcon: ({ focused }) => (

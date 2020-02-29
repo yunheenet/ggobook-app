@@ -15,14 +15,15 @@ const View = styled.View`
 `;
 
 export default ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const confirmInput = useInput("");
   const logIn = useLogIn();
-  const [loading, setLoading] = useState(false);
+  const email = navigation.getParam("email");
 
   const [confirmSecretMutation] = useMutation(CONFIRM_SECRET, {
     variables: {
       secret: confirmInput.value,
-      email: navigation.getParam("email")
+      email
     }
   });
 
