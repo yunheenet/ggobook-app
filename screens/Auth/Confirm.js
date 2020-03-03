@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { useMutation } from "@apollo/react-hooks";
+import styled from "styled-components";
 import AuthButton from "../../components/AuthButton";
 import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
-import { LOG_IN, CONFIRM_SECRET } from "./AuthQueries";
+import { CONFIRM_SECRET } from "./AuthQueries";
 import { useLogIn } from "../../AuthContext";
 
 const View = styled.View`
@@ -14,11 +14,11 @@ const View = styled.View`
   flex: 1;
 `;
 
-export default ({ navigation }) => {
+export default ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const confirmInput = useInput("");
   const logIn = useLogIn();
-  const email = navigation.getParam("email");
+  const email = route.params?.email ?? "";
 
   const [confirmSecretMutation] = useMutation(CONFIRM_SECRET, {
     variables: {

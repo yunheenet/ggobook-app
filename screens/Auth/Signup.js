@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
+import styled from "styled-components";
 import AuthButton from "../../components/AuthButton";
 import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
 import { useMutation } from "@apollo/react-hooks";
-import { LOG_IN, CREATE_ACCOUNT } from "./AuthQueries";
+import { CREATE_ACCOUNT } from "./AuthQueries";
 
 const View = styled.View`
   justify-content: center;
@@ -13,10 +13,10 @@ const View = styled.View`
   flex: 1;
 `;
 
-export default ({ navigation }) => {
+export default ({ navigation, route }) => {
   const fNameInput = useInput("");
   const lNameInput = useInput("");
-  const emailInput = useInput(navigation.getParam("email", ""));
+  const emailInput = useInput(route.params?.email ?? "");
   const usernameInput = useInput("");
   const [loading, setLoading] = useState(false);
 

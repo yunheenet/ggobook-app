@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useMutation } from "@apollo/react-hooks";
 import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { useMutation } from "@apollo/react-hooks";
 import styled from "styled-components";
 import AuthButton from "../../components/AuthButton";
 import AuthInput from "../../components/AuthInput";
@@ -13,10 +13,8 @@ const View = styled.View`
   flex: 1;
 `;
 
-const Text = styled.Text``;
-
-export default ({ navigation }) => {
-  const emailInput = useInput(navigation.getParam("email", ""));
+export default ({ navigation, route }) => {
+  const emailInput = useInput(route.params?.email ?? "");
   const [loading, setLoading] = useState(false);
 
   const [requestSecretMutation] = useMutation(LOG_IN, {

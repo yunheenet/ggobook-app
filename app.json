@@ -4,7 +4,7 @@
     "slug": "ggobook-app",
     "privacy": "public",
     "sdkVersion": "36.0.0",
-    "platforms": ["ios"],
+    "platforms": ["ios", "android"],
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,8 +19,12 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "net.ggobook.ggobook",
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.0.1",
       "supportsTablet": true
+    },
+    "android": {
+      "package": "net.ggobook.ggobook",
+      "versionCode": 1
     }
   }
 }

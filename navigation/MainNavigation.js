@@ -13,14 +13,14 @@ export default function MainNavigation() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#FAFAFA"
+            ...stackStyles
           }
         }}
         headerMode="none"
         mode="modal"
       >
         <Stack.Screen name="TabNavigation" component={TabNavigation} />
-        {/* <Stack.Screen component={PhotoTabs} /> */}
+        <Stack.Screen name="PhotoNavigation" component={PhotoTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

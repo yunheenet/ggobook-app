@@ -6,9 +6,9 @@ import AddBook from "../screens/Photo/AddBook";
 import { stackStyles } from "./config";
 import styles from "../styles";
 
-const PhotoTab = createMaterialTopTabNavigator();
-
 function PhotoTabs() {
+  const PhotoTab = createMaterialTopTabNavigator();
+
   return (
     <PhotoTab.Navigator
       tabBarPosition="bottom"
