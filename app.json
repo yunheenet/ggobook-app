@@ -1,14 +1,10 @@
 {
   "expo": {
-    "name": "Blank Template",
+    "name": "GgoBook",
     "slug": "ggobook-app",
     "privacy": "public",
     "sdkVersion": "36.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,10 +16,10 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "net.ggobook.ggobook",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     }
   }
