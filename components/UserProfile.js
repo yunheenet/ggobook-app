@@ -56,8 +56,11 @@ const Button = styled.View`
   align-items: center;
 `;
 
+const GridContainer = styled.View``;
+
 const Square = styled.View`
   flex-direction: row;
+  flex-wrap: wrap;
 `;
 const List = styled.View`
   flex-direction: column;
@@ -79,7 +82,7 @@ const UserProfile = ({
       <ProfileHeader>
         <Image
           style={{ height: 80, width: 80, borderRadius: 40 }}
-          source={{ uri: avatar }}
+          source={avatar ? { uri: avatar } : require("../assets/logo_full.png")}
         />
         <HeaderColumn>
           <ProfileStats>
@@ -122,15 +125,17 @@ const UserProfile = ({
           </Button>
         </TouchableOpacity>
       </ButtonContainer>
-      {isGrid ? (
-        <Square>
-          {books && books.map(b => <SquareBook key={b.id} {...b} />)}
-        </Square>
-      ) : (
-        <List>
-          {books && books.map(b => <BookCardHeader key={b.id} {...b} />)}
-        </List>
-      )}
+      <GridContainer>
+        {isGrid ? (
+          <Square>
+            {books && books.map(b => <SquareBook key={b.id} {...b} />)}
+          </Square>
+        ) : (
+          <List>
+            {books && books.map(b => <BookCardHeader key={b.id} {...b} />)}
+          </List>
+        )}
+      </GridContainer>
     </View>
   );
 };
