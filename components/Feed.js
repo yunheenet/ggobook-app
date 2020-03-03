@@ -127,7 +127,7 @@ const Feed = ({ id, caption, data, user, navigation }) => {
 
 Feed.propTypes = {
   id: PropTypes.string.isRequired,
-  caption: PropTypes.string.isRequired,
+  caption: PropTypes.string,
   data: PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
