@@ -8,8 +8,12 @@ const SquareBook = ({ navigation, id, data: { coverSmallUrl } }) => (
   <TouchableOpacity onPress={() => navigation.navigate("BookDetail", { id })}>
     <Image
       source={{ uri: coverSmallUrl }}
-      style={{ width: constants.width / 3, height: constants.height / 4 }}
-      resizeMode="contain"
+      style={{
+        width: constants.width / 3.2,
+        height: constants.height / 4.5,
+        margin: 2
+      }}
+      resizeMode="cover"
     />
   </TouchableOpacity>
 );
