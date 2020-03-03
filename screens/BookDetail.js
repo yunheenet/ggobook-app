@@ -3,7 +3,7 @@ import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import Loader from "../components/Loader";
 import BookCard from "../components/BookCard";
-import { ScrollView, Button } from "react-native";
+import { View, ScrollView } from "react-native";
 
 const BOOK_DETAIL = gql`
   query seeFullBook($id: String!) {

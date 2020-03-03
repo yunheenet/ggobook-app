@@ -1,4 +1,5 @@
 import React from "react";
+import { StatusBar } from "react-native";
 import styled from "styled-components";
 import constants from "../../constants";
 import AuthButton from "../../components/AuthButton";
@@ -10,7 +11,8 @@ const View = styled.View`
 `;
 
 const Image = styled.Image`
-  width: ${constants.width / 2.5};
+  width: ${constants.width / 2.5}px;
+  margin-top: -100px;
 `;
 
 const Touchable = styled.TouchableOpacity``;
@@ -24,7 +26,11 @@ const LoginLinkText = styled.Text`
 
 export default ({ navigation }) => (
   <View>
-    <Image resizeMode={"contain"} source={require("../../assets/logo.png")} />
+    <StatusBar barStyle="dark-content" />
+    <Image
+      resizeMode={"contain"}
+      source={require("../../assets/logo_full.png")}
+    />
     <AuthButton
       text={"Create New Account"}
       onPress={() => navigation.navigate("Signup")}
