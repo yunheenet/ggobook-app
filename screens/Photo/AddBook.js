@@ -7,13 +7,21 @@ import {
 } from "react-native";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
+import { USER_FRAGMENT } from "../../fragments";
 import styled from "styled-components";
 import styles from "../../styles";
 import constants from "../../constants";
 import Loader from "../../components/Loader";
 import Divider from "../../components/Divider";
-import { ME } from "../Tabs/Profile";
-import { BOOK_FEED } from "../Tabs/Home";
+
+const ME = gql`
+  {
+    me {
+      ...UserParts
+    }
+  }
+  ${USER_FRAGMENT}
+`;
 
 const POST_BOOK = gql`
   mutation postBook($bookId: String!) {
@@ -44,7 +52,7 @@ const ButtonContainer = styled.View`
   padding: 10px;
   margin-bottom: 40px;
   border-radius: 4px;
-  width: ${constants.width / 2};
+  width: ${constants.width / 2}px;
 `;
 const Text = styled.Text`
   color: white;
@@ -72,26 +80,29 @@ const InfoContainer = styled.View`
 `;
 
 const Title = styled.Text`
+  width: ${constants.width - 130}px;
   margin: 10px;
   font-weight: 500;
-  font-size: 18;
+  font-size: 18px;
   height: 45px;
   overflow: hidden;
 `;
 
 const Caption = styled.Text`
+  width: ${constants.width - 130}px;
   padding: 0 10px 0 0;
 `;
 
 const Description = styled.Text`
+  width: ${constants.width - 50}px;
   margin: 10px 0px;
 `;
 
-export default ({ navigation }) => {
+export default ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { loading, data } = useQuery(FIND_GGOBOOK, {
-    variables: { isbn: navigation.getParam("data") }
+    variables: { isbn: route.params.data }
   });
 
   const [postBookMutation] = useMutation(POST_BOOK);
@@ -106,7 +117,7 @@ export default ({ navigation }) => {
 
     setIsLoading(false);
     if (postBook === true) {
-      navigation.pop();
+      navigation.goBack();
       navigation.navigate("Profile");
     } else {
       alert("Fail");
@@ -126,14 +137,13 @@ export default ({ navigation }) => {
                 style={{ width: 100, height: 140 }}
                 key={data.findGgoBook.id}
                 source={{ uri: data.findGgoBook.coverLargeUrl }}
-                borderTopLeftRadius="20px"
-                borderBottomLeftRadius="20px"
+                borderTopLeftRadius={20}
+                borderBottomLeftRadius={20}
               />
               <InfoContainer>
                 <Title>{data.findGgoBook.title}</Title>
-                <Caption>
-                  {data.findGgoBook.author}, {data.findGgoBook.publisher}
-                </Caption>
+                <Caption>{data.findGgoBook.author}</Caption>
+                <Caption>{data.findGgoBook.publisher}</Caption>
               </InfoContainer>
             </BookCard>
             <Divider />

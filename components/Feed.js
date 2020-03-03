@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Image, TouchableOpacity } from "react-native";
-import { withNavigation } from "react-navigation";
+import { withNavigation } from "@react-navigation/compat";
 import { Ionicons } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import styles from "../styles";
 import constants from "../constants";
+import styles from "../styles";
 import Divider from "../components/Divider";
 
 const Container = styled.View`
@@ -107,8 +107,8 @@ const Feed = ({ id, caption, data, user, navigation }) => {
               style={{ width: 100, height: 120 }}
               key={id}
               source={{ uri: data.coverLargeUrl }}
-              borderTopLeftRadius="20px"
-              borderBottomLeftRadius="20px"
+              borderTopLeftRadius={20}
+              borderBottomLeftRadius={20}
             />
             <InfoContainer>
               <Title>{data.title}</Title>

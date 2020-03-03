@@ -27,8 +27,8 @@ const BOOK_DETAIL = gql`
   }
 `;
 
-export default ({ navigation }) => {
-  const bookId = navigation.getParam("id");
+export default ({ navigation, route }) => {
+  const bookId = route.params.id;
   const { loading, data, error } = useQuery(BOOK_DETAIL, {
     variables: { id: bookId }
   });

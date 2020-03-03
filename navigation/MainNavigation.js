@@ -1,24 +1,27 @@
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import TabNavigation from "./TabNavigation";
-import PhotoNavigation from "./PhotoNavigation";
-import MessageNavigation from "./MessageNavigation";
+import PhotoTabs from "./PhotoTabs";
 import { stackStyles } from "./config";
 
-const MainNavigation = createStackNavigator(
-  {
-    TabNavigation,
-    PhotoNavigation
-    //MessageNavigation
-  },
-  {
-    defaultNavigationOptions: {
-      headerStyle: {
-        ...stackStyles
-      }
-    },
-    headerMode: "none",
-    mode: "modal"
-  }
-);
+export default function MainNavigation() {
+  const Stack = createStackNavigator();
 
-export default createAppContainer(MainNavigation);
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#FAFAFA"
+          }
+        }}
+        headerMode="none"
+        mode="modal"
+      >
+        <Stack.Screen name="TabNavigation" component={TabNavigation} />
+        {/* <Stack.Screen component={PhotoTabs} /> */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}

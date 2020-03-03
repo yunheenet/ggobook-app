@@ -8,7 +8,7 @@ import { gql } from "apollo-boost";
 import constants from "../constants";
 import styles from "../styles";
 import { useMutation } from "@apollo/react-hooks";
-import { withNavigation } from "react-navigation";
+import { withNavigation } from "@react-navigation/compat";
 
 export const TOGGLE_LIKE = gql`
   mutation toggelLike($postId: String!) {

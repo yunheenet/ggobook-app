@@ -11,7 +11,7 @@ import {
 import styled from "styled-components";
 import styles from "../styles";
 import PropTypes from "prop-types";
-import { withNavigation } from "react-navigation";
+import { withNavigation } from "@react-navigation/compat";
 import Divider from "../components/Divider";
 import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
@@ -19,7 +19,6 @@ import constants from "../constants";
 import useInput from "../hooks/useInput";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { ME } from "../screens/Tabs/Profile";
 
 const DELETE_BOOK = gql`
   mutation deleteBook($id: String!) {
@@ -352,8 +351,8 @@ const Book = ({
             style={{ width: 100, height: 140 }}
             key={id}
             source={{ uri: coverLargeUrl }}
-            borderTopLeftRadius="20px"
-            borderBottomLeftRadius="20px"
+            borderTopLeftRadius={20}
+            borderBottomLeftRadius={20}
           />
           <InfoContainer>
             <Title>{title}</Title>
