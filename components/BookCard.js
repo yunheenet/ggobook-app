@@ -6,15 +6,16 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
+  Alert
 } from "react-native";
-import styled from "styled-components";
-import styles from "../styles";
-import PropTypes from "prop-types";
-import { withNavigation } from "@react-navigation/compat";
-import Divider from "../components/Divider";
-import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
+import { withNavigation } from "@react-navigation/compat";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Ionicons } from "@expo/vector-icons";
+import styles from "../styles";
+import Divider from "../components/Divider";
 import constants from "../constants";
 import useInput from "../hooks/useInput";
 import { gql } from "apollo-boost";
@@ -204,7 +205,7 @@ const Book = ({
       navigation.pop();
       navigation.navigate("Profile");
     } else {
-      alert("Fail");
+      Alert.alert("Fail");
     }
   };
 
@@ -214,12 +215,11 @@ const Book = ({
 
   const handleAddMemo = async text => {
     setLoading(true);
-    const newData = [...listData];
-    newData.push({ text: text });
-    setListData(newData);
 
     try {
-      await addBookMemoMutation({
+      const {
+        data: { addBookMemo }
+      } = await addBookMemoMutation({
         variables: { bookId, text },
         refetchQueries: [
           {
@@ -228,8 +228,12 @@ const Book = ({
           }
         ]
       });
+
+      const newData = [...listData];
+      newData.push({ text, id: addBookMemo.id });
+      setListData(newData);
     } catch {
-      alert("please retry.");
+      Alert.alert("please retry.");
     }
 
     initialtizeNote();
@@ -254,7 +258,7 @@ const Book = ({
         ]
       });
     } catch {
-      alert("please retry.");
+      Alert.alert("please retry.");
     }
 
     note.onChange("");
@@ -281,7 +285,7 @@ const Book = ({
         ]
       });
     } catch {
-      alert("please retry.");
+      Alert.alert("please retry.");
     }
 
     setLoading(false);
@@ -299,7 +303,7 @@ const Book = ({
         <NoteModal
           onChangeText={note.onChange}
           value={note.value}
-          placeholder=" Add Note"
+          placeholder="Add Note"
           multiline={true}
           textAlignVertical={"top"}
           placeholderTextColor={styles.lightGreyColor}
@@ -383,11 +387,11 @@ const Book = ({
                   <Divider />
                 </TouchableOpacity>
               )}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={item => item.id}
               scrollEnabled={false}
             />
             <NoteAdder>
-              <TouchableOpacity onPress={toggleModal}>
+              <TouchableOpacity onPress={() => toggleModal()}>
                 <Ionicons
                   size={32}
                   name={
