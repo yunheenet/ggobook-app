@@ -5,17 +5,40 @@ import Signup from "../screens/Auth/Signup";
 import Confirm from "../screens/Auth/Confirm";
 import Login from "../screens/Auth/Login";
 import AuthHome from "../screens/Auth/AuthHome";
+import styles from "../styles";
+import { stackStyles } from "./config";
 
 export default () => {
   const Stack = createStackNavigator();
 
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen component={AuthHome} />
-        <Stack.Screen component={Login} />
-        <Stack.Screen component={Confirm} />
-        <Stack.Screen component={Signup} />
+      <Stack.Navigator
+        headerMode="screen"
+        screenOptions={{
+          headerBackTitleVisible: false,
+          headerTintColor: styles.blackColor,
+          headerStyle: { ...stackStyles }
+        }}
+      >
+        <Stack.Screen
+          name="AuthHome"
+          component={AuthHome}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen
+          name="Confirm"
+          component={Confirm}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Signup"
+          component={Signup}
+          options={{
+            headerTitle: "Sign Up"
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

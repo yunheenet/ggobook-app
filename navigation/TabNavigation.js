@@ -13,7 +13,7 @@ import { stackStyles } from "./config";
 import styles from "../styles";
 
 const stackNavigatorOptions = {
-  headerBackTitle: null,
+  headerBackTitleVisible: false,
   headerTintColor: styles.blackColor,
   headerStyle: { ...stackStyles }
 };
@@ -29,14 +29,11 @@ function HomeStackScreen() {
             focused={focused}
             name={Platform.OS === "ios" ? "ios-home" : "md-home"}
           />
-        )
+        ),
+        ...stackNavigatorOptions
       }}
     >
-      <HomeStack.Screen
-        name="Home"
-        component={Home}
-        options={{ ...stackNavigatorOptions }}
-      />
+      <HomeStack.Screen name="Home" component={Home} />
       <HomeStack.Screen
         name="BookDetail"
         component={BookDetail}
@@ -46,7 +43,7 @@ function HomeStackScreen() {
         name="UserDetail"
         component={UserDetail}
         options={({ route }) => ({
-          title: route.params.username
+          title: route.params?.username ?? "User Profile"
         })}
       />
     </HomeStack.Navigator>
@@ -92,7 +89,8 @@ function ProfileStackScreen() {
             focused={focused}
             name={Platform.OS === "ios" ? "ios-person" : "md-person"}
           />
-        )
+        ),
+        ...stackNavigatorOptions
       }}
     >
       <ProfileStack.Screen
@@ -100,8 +98,7 @@ function ProfileStackScreen() {
         component={Profile}
         options={{
           title: "Profile",
-          headerRight: () => <Logout />,
-          ...stackNavigatorOptions
+          headerRight: () => <Logout />
         }}
       />
       <ProfileStack.Screen

@@ -12,6 +12,7 @@ export default function MainNavigation() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
+          headerBackTitleVisible: false,
           headerStyle: {
             ...stackStyles
           }
