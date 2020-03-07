@@ -105,10 +105,13 @@ export default ({ navigation, route }) => {
     variables: { isbn: route.params.data }
   });
 
-  const [postBookMutation] = useMutation(POST_BOOK);
+  const [postBookMutation] = useMutation(POST_BOOK, {
+    refetchQueries: () => [{ query: ME }]
+  });
 
-  const handlePostBook = async () => {
+  const handleAddBook = async () => {
     setIsLoading(true);
+
     const {
       data: { postBook }
     } = await postBookMutation({
@@ -116,12 +119,17 @@ export default ({ navigation, route }) => {
     });
 
     setIsLoading(false);
+
     if (postBook === true) {
       navigation.goBack();
       navigation.navigate("Profile");
     } else {
-      alert("Fail");
+      Alert.alert("Fail");
     }
+  };
+
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   return (
@@ -129,7 +137,7 @@ export default ({ navigation, route }) => {
       <ScrollView>
         {loading ? (
           <Loader />
-        ) : (
+        ) : data && data.findGgoBook && data.findGgoBook.id ? (
           <BookContainer>
             <BookCard>
               <Image
@@ -149,16 +157,24 @@ export default ({ navigation, route }) => {
             <Divider />
             <Description>{data.findGgoBook.description}</Description>
           </BookContainer>
+        ) : (
+          <View>
+            <Text>해당 책을 찾을 수 없습니다. </Text>
+          </View>
         )}
       </ScrollView>
       <ButtonContainer>
-        <TouchableOpacity disabled={isLoading} onPress={handlePostBook}>
-          {isLoading ? (
-            <ActivityIndicator color="white" />
-          ) : (
+        {isLoading ? (
+          <ActivityIndicator color="white" />
+        ) : data && data.findGgoBook && data.findGgoBook.id ? (
+          <TouchableOpacity onPress={handleAddBook}>
             <Text>Add Book </Text>
-          )}
-        </TouchableOpacity>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={handleGoBack}>
+            <Text>Back </Text>
+          </TouchableOpacity>
+        )}
       </ButtonContainer>
     </View>
   );
