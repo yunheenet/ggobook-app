@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { withNavigation } from "@react-navigation/compat";
+import { StackActions } from "@react-navigation/native";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ import constants from "../constants";
 import useInput from "../hooks/useInput";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import { USER_FRAGMENT } from "../fragments";
 
 const DELETE_BOOK = gql`
   mutation deleteBook($id: String!) {
@@ -71,6 +73,15 @@ const BOOK_DETAIL = gql`
       isMyBook
     }
   }
+`;
+
+const ME = gql`
+  {
+    me {
+      ...UserParts
+    }
+  }
+  ${USER_FRAGMENT}
 `;
 
 const View = styled.View``;
@@ -202,7 +213,7 @@ const Book = ({
     } = await deleteBookMutation();
 
     if (deleteBook === true) {
-      navigation.pop();
+      navigation.dispatch(StackActions.pop(1));
       navigation.navigate("Profile");
     } else {
       Alert.alert("Fail");
