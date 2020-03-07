@@ -8,9 +8,9 @@ import AuthHome from "../screens/Auth/AuthHome";
 import styles from "../styles";
 import { stackStyles } from "./config";
 
-export default () => {
-  const Stack = createStackNavigator();
+const Stack = createStackNavigator();
 
+export default () => {
   return (
     <NavigationContainer>
       <Stack.Navigator

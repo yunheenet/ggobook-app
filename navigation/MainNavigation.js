@@ -5,9 +5,9 @@ import TabNavigation from "./TabNavigation";
 import PhotoTabs from "./PhotoTabs";
 import { stackStyles } from "./config";
 
-export default function MainNavigation() {
-  const Stack = createStackNavigator();
+const Stack = createStackNavigator();
 
+export default function MainNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator

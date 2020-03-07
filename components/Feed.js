@@ -83,7 +83,11 @@ const Feed = ({ id, caption, data, user, navigation }) => {
         >
           <Image
             style={{ height: 40, width: 40, borderRadius: 20 }}
-            source={{ uri: user.avatar }}
+            source={
+              user.avatar
+                ? { uri: user.avatar }
+                : require("../assets/logo_full.png")
+            }
           />
         </Touchable>
         <Touchable

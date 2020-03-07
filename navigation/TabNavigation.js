@@ -110,14 +110,12 @@ function ProfileStackScreen() {
   );
 }
 
-export default () => {
-  const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
+export default () => {
   return (
     <Tab.Navigator
-      screenOptions={{
-        initialRouteName: "Profile"
-      }}
+      initialRouteName="Profile"
       tabBarOptions={{
         showLabel: false,
         style: {

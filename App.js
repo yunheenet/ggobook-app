@@ -15,7 +15,7 @@ import styles from "./styles";
 import NavController from "./components/NavController";
 
 export default function App() {
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [client, setClient] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
@@ -51,8 +51,8 @@ export default function App() {
         setIsLoggedIn(true);
       }
 
-      setLoaded(true);
       setClient(client);
+      setLoading(false);
     } catch (e) {
       console.log(e);
     }
@@ -62,7 +62,9 @@ export default function App() {
     preLoad();
   }, []);
 
-  return loaded && client && isLoggedIn !== null ? (
+  return loading ? (
+    <AppLoading />
+  ) : (
     <ApolloProvider client={client}>
       <ThemeProvider theme={styles}>
         <AuthProvider isLoggedIn={isLoggedIn} client={client}>
@@ -70,7 +72,5 @@ export default function App() {
         </AuthProvider>
       </ThemeProvider>
     </ApolloProvider>
-  ) : (
-    <AppLoading />
   );
 }
