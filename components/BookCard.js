@@ -381,6 +381,7 @@ const Book = ({
               data={listData}
               renderItem={({ item, index }) => (
                 <TouchableOpacity
+                  disabled={!isMyBook}
                   onPress={() => toggleEditModal(item.text, index, item.id)}
                 >
                   <Note>{item.text}</Note>
@@ -390,18 +391,22 @@ const Book = ({
               keyExtractor={item => item.id}
               scrollEnabled={false}
             />
-            <NoteAdder>
-              <TouchableOpacity onPress={() => toggleModal()}>
-                <Ionicons
-                  size={32}
-                  name={
-                    Platform.OS === "ios"
-                      ? "ios-add-circle-outline"
-                      : "md-add-circle-outline"
-                  }
-                />
-              </TouchableOpacity>
-            </NoteAdder>
+            {isMyBook ? (
+              <NoteAdder>
+                <TouchableOpacity onPress={() => toggleModal()}>
+                  <Ionicons
+                    size={32}
+                    name={
+                      Platform.OS === "ios"
+                        ? "ios-add-circle-outline"
+                        : "md-add-circle-outline"
+                    }
+                  />
+                </TouchableOpacity>
+              </NoteAdder>
+            ) : (
+              undefined
+            )}
           </SafeAreaView>
         </NoteContainer>
       </BookContainer>
