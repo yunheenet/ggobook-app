@@ -50,8 +50,17 @@ const Title = styled.Text`
   margin: 10px;
   font-weight: 500;
   font-size: 18px;
+  text-align: center;
+  min-width: 200px;
+  max-width: ${constants.width - 150}px;
   height: 45px;
   overflow: hidden;
+`;
+
+const Author = styled.Text`
+  padding: 0 10px 0 0;
+  text-align: center;
+  max-width: ${constants.width - 150}px;
 `;
 
 const Caption = styled.Text`
@@ -97,7 +106,7 @@ const Feed = ({ id, caption, data, user, navigation }) => {
         >
           <HeaderUserContainer>
             <Bold>{user.username}</Bold>
-            <Location>{user.username}</Location>
+            <Location></Location>
           </HeaderUserContainer>
         </Touchable>
       </Header>
@@ -110,13 +119,17 @@ const Feed = ({ id, caption, data, user, navigation }) => {
               resizeMode="contain"
               style={{ width: 100, height: 120 }}
               key={id}
-              source={{ uri: data.coverLargeUrl }}
+              source={
+                data.coverLargeUrl
+                  ? { uri: data.coverLargeUrl }
+                  : require("../assets/icon.png")
+              }
               borderTopLeftRadius={20}
               borderBottomLeftRadius={20}
             />
             <InfoContainer>
               <Title>{data.title}</Title>
-              <Caption>{data.author}</Caption>
+              <Author>{data.author}</Author>
             </InfoContainer>
           </BookCard>
         </TouchableOpacity>

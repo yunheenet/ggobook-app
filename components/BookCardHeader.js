@@ -22,17 +22,30 @@ const BookCard = styled.View`
 `;
 
 const InfoContainer = styled.View`
-  width: ${constants.width - 130}px
-  margin-left: 10px;
-  align-items: flex-end;
+  padding: 10px;
 `;
 
 const Title = styled.Text`
   margin: 10px;
   font-weight: 500;
   font-size: 18px;
+  text-align: center;
+  min-width: 200px;
+  max-width: ${constants.width - 150}px;
   height: 45px;
   overflow: hidden;
+`;
+
+const Author = styled.Text`
+  padding: 0 10px 0 0;
+  text-align: center;
+  max-width: ${constants.width - 150}px;
+`;
+
+const Publisher = styled.Text`
+  padding: 0 10px 0 0;
+  text-align: center;
+  max-width: ${constants.width - 150}px;
 `;
 
 const Caption = styled.Text`
@@ -54,14 +67,17 @@ const BookCardHeader = ({
             resizeMode="contain"
             style={{ width: 100, height: 120 }}
             key={id}
-            source={{ uri: coverLargeUrl }}
+            source={
+              coverLargeUrl
+                ? { uri: coverLargeUrl }
+                : require("../assets/icon.png")
+            }
             borderTopLeftRadius={20}
             borderBottomLeftRadius={20}
           />
           <InfoContainer>
             <Title>{title}</Title>
-            <Caption>{author}</Caption>
-            <Caption>{publisher}</Caption>
+            <Author>{author}</Author>
           </InfoContainer>
         </BookCard>
       </TouchableOpacity>

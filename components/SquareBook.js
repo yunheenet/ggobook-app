@@ -7,7 +7,9 @@ import constants from "../constants";
 const SquareBook = ({ navigation, id, data: { coverSmallUrl } }) => (
   <TouchableOpacity onPress={() => navigation.navigate("BookDetail", { id })}>
     <Image
-      source={{ uri: coverSmallUrl }}
+      source={
+        coverSmallUrl ? { uri: coverSmallUrl } : require("../assets/icon.png")
+      }
       style={{
         width: constants.width / 3.2,
         height: constants.height / 4.5,
@@ -21,8 +23,8 @@ const SquareBook = ({ navigation, id, data: { coverSmallUrl } }) => (
 SquareBook.propTypes = {
   id: PropTypes.string.isRequired,
   data: PropTypes.shape({
-    coverSmallUrl: PropTypes.string.isRequired,
-    coverLargeUrl: PropTypes.string.isRequired
+    coverSmallUrl: PropTypes.string,
+    coverLargeUrl: PropTypes.string
   })
 };
 

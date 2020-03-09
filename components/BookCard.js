@@ -110,6 +110,9 @@ const Title = styled.Text`
   margin: 10px;
   font-weight: 500;
   font-size: 18px;
+  text-align: center;
+  min-width: 200px;
+  max-width: ${constants.width - 150}px;
   height: 45px;
   overflow: hidden;
 `;
@@ -365,7 +368,11 @@ const Book = ({
             resizeMode="contain"
             style={{ width: 100, height: 140 }}
             key={id}
-            source={{ uri: coverLargeUrl }}
+            source={
+              coverLargeUrl
+                ? { uri: coverLargeUrl }
+                : require("../assets/icon.png")
+            }
             borderTopLeftRadius={20}
             borderBottomLeftRadius={20}
           />

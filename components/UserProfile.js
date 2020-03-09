@@ -159,8 +159,8 @@ UserProfile.propTypes = {
         title: PropTypes.string.isRequired,
         author: PropTypes.string.isRequired,
         publisher: PropTypes.string.isRequired,
-        coverSmallUrl: PropTypes.string.isRequired,
-        coverLargeUrl: PropTypes.string.isRequired,
+        coverSmallUrl: PropTypes.string,
+        coverLargeUrl: PropTypes.string,
         description: PropTypes.string
       })
     })
