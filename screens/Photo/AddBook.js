@@ -27,6 +27,7 @@ const POST_BOOK = gql`
   mutation postBook($bookId: String!) {
     postBook(bookId: $bookId) {
       id
+      caption
       data {
         id
         isbn
@@ -37,11 +38,16 @@ const POST_BOOK = gql`
         coverSmallUrl
         coverLargeUrl
       }
+      createdAt
       memos {
         id
         text
       }
-      createdAt
+      user {
+        id
+        avatar
+        username
+      }
     }
   }
 `;
@@ -55,6 +61,27 @@ const FIND_GGOBOOK = gql`
       publisher
       description
       coverLargeUrl
+    }
+  }
+`;
+
+const BOOK_FEED = gql`
+  {
+    bookFeed {
+      id
+      caption
+      data {
+        id
+        title
+        author
+        coverLargeUrl
+      }
+      createdAt
+      user {
+        id
+        avatar
+        username
+      }
     }
   }
 `;
@@ -134,11 +161,15 @@ export default ({ navigation, route }) => {
       const { error } = await postBookMutation({
         variables: { bookId: findGgoBook.id },
         update: (proxy, { data: { postBook } }) => {
-          const data = proxy.readQuery({ query: ME });
+          let data = proxy.readQuery({ query: ME });
           data.me.books.push(postBook);
           proxy.writeQuery({ query: ME, data });
+
+          data = proxy.readQuery({ query: BOOK_FEED });
+          data.bookFeed.push(postBook);
+          proxy.writeQuery({ query: BOOK_FEED, data });
         },
-        refetchQueries: () => [{ query: ME }]
+        refetchQueries: () => [{ query: ME }, { query: BOOK_FEED }]
       });
 
       setIsLoading(false);
