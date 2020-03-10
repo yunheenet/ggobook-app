@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, RefreshControl } from "react-native";
+import { ScrollView, RefreshControl, StatusBar } from "react-native";
 import { gql } from "apollo-boost";
 import { USER_FRAGMENT } from "../../fragments";
 import Loader from "../../components/Loader";
@@ -40,6 +40,7 @@ export default ({ navigation }) => {
         <RefreshControl refreshing={refreshing} onRefresh={refresh} />
       }
     >
+      <StatusBar barStyle="dark-content" />
       {loading ? <Loader /> : data && data.me && <UserProfile {...data.me} />}
     </ScrollView>
   );

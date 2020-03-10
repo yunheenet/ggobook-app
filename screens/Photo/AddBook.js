@@ -113,9 +113,9 @@ const BookContainer = styled.View`
 `;
 
 const BookCard = styled.View`
-  margin: 5px;
+  margin: 10px 0 0 30px;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
 `;
 
 const InfoContainer = styled.View`
@@ -191,35 +191,33 @@ export default ({ navigation, route }) => {
 
   return (
     <View>
-      <ScrollView>
-        {loading ? (
-          <Loader />
-        ) : findGgoBook && findGgoBook.id ? (
-          <BookContainer>
-            <BookCard>
-              <Image
-                resizeMode="contain"
-                style={{ width: 100, height: 140 }}
-                key={findGgoBook.id}
-                source={{ uri: findGgoBook.coverLargeUrl }}
-                borderTopLeftRadius={20}
-                borderBottomLeftRadius={20}
-              />
-              <InfoContainer>
-                <Title>{findGgoBook.title}</Title>
-                <Caption>{findGgoBook.author}</Caption>
-                <Caption>{findGgoBook.publisher}</Caption>
-              </InfoContainer>
-            </BookCard>
-            <Divider />
-            <Description>{findGgoBook.description}</Description>
-          </BookContainer>
-        ) : (
-          <View>
-            <Text>해당 책을 찾을 수 없습니다. </Text>
-          </View>
-        )}
-      </ScrollView>
+      {loading ? (
+        <Loader />
+      ) : findGgoBook && findGgoBook.id ? (
+        <BookContainer>
+          <BookCard>
+            <Image
+              resizeMode="contain"
+              style={{ width: 100, height: 140 }}
+              key={findGgoBook.id}
+              source={{ uri: findGgoBook.coverLargeUrl }}
+              borderTopLeftRadius={20}
+              borderBottomLeftRadius={20}
+            />
+            <InfoContainer>
+              <Title>{findGgoBook.title}</Title>
+              <Caption>{findGgoBook.author}</Caption>
+              <Caption>{findGgoBook.publisher}</Caption>
+            </InfoContainer>
+          </BookCard>
+          <Divider />
+          <Description>{findGgoBook.description}</Description>
+        </BookContainer>
+      ) : (
+        <View>
+          <Text>해당 책을 찾을 수 없습니다. </Text>
+        </View>
+      )}
       <ButtonContainer>
         {isLoading ? (
           <ActivityIndicator color="white" />
