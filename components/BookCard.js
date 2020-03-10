@@ -84,6 +84,27 @@ const ME = gql`
   ${USER_FRAGMENT}
 `;
 
+const BOOK_FEED = gql`
+  {
+    bookFeed {
+      id
+      caption
+      data {
+        id
+        title
+        author
+        coverLargeUrl
+      }
+      createdAt
+      user {
+        id
+        avatar
+        username
+      }
+    }
+  }
+`;
+
 const View = styled.View``;
 
 const BookContainer = styled.View`
@@ -186,11 +207,7 @@ const Book = ({
   const [listIndex, setListIndex] = useState(0);
   const [memoId, setMemoId] = useState("");
 
-  const [deleteBookMutation] = useMutation(DELETE_BOOK, {
-    variables: { id: bookId },
-    refetchQueries: () => [{ query: ME }]
-  });
-
+  const [deleteBookMutation] = useMutation(DELETE_BOOK);
   const [addBookMemoMutation] = useMutation(ADD_BOOK_MEMO);
   const [editBookMemoMutation] = useMutation(EDIT_BOOK_MEMO);
   const [deleteBookMemoMutation] = useMutation(DELETE_BOOK_MEMO);
@@ -211,15 +228,32 @@ const Book = ({
   };
 
   const handleDeleteBook = async () => {
-    const {
-      data: { deleteBook }
-    } = await deleteBookMutation();
+    setLoading(true);
 
-    if (deleteBook === true) {
-      navigation.dispatch(StackActions.pop(1));
-      navigation.navigate("Profile");
-    } else {
-      Alert.alert("Fail");
+    try {
+      const { error } = await deleteBookMutation({
+        variables: { id: bookId },
+        update: proxy => {
+          const data = proxy.readQuery({ query: BOOK_FEED });
+          const idx = data.bookFeed.findIndex(item => {
+            return item.id === bookId;
+          });
+          if (idx > -1) {
+            data.bookFeed.slice(idx, 1);
+          }
+          proxy.writeQuery({ query: BOOK_FEED, data });
+        },
+        refetchQueries: () => [{ query: ME }, { query: BOOK_FEED }]
+      });
+
+      if (error) {
+        Alert.alert("Fail");
+      } else {
+        setLoading(false);
+        navigation.goBack();
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
