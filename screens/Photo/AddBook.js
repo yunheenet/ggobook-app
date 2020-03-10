@@ -25,7 +25,24 @@ const ME = gql`
 
 const POST_BOOK = gql`
   mutation postBook($bookId: String!) {
-    postBook(bookId: $bookId)
+    postBook(bookId: $bookId) {
+      id
+      data {
+        id
+        isbn
+        title
+        author
+        publisher
+        description
+        coverSmallUrl
+        coverLargeUrl
+      }
+      memos {
+        id
+        text
+      }
+      createdAt
+    }
   }
 `;
 
@@ -101,30 +118,39 @@ const Description = styled.Text`
 export default ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const { loading, data } = useQuery(FIND_GGOBOOK, {
+  const {
+    loading,
+    data: { findGgoBook }
+  } = useQuery(FIND_GGOBOOK, {
     variables: { isbn: route.params.data }
   });
 
-  const [postBookMutation] = useMutation(POST_BOOK, {
-    refetchQueries: () => [{ query: ME }]
-  });
+  const [postBookMutation] = useMutation(POST_BOOK);
 
   const handleAddBook = async () => {
     setIsLoading(true);
 
-    const {
-      data: { postBook }
-    } = await postBookMutation({
-      variables: { bookId: data.findGgoBook.id }
-    });
+    try {
+      const { error } = await postBookMutation({
+        variables: { bookId: findGgoBook.id },
+        update: (proxy, { data: { postBook } }) => {
+          const data = proxy.readQuery({ query: ME });
+          data.me.books.push(postBook);
+          proxy.writeQuery({ query: ME, data });
+        },
+        refetchQueries: () => [{ query: ME }]
+      });
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    if (postBook === true) {
-      navigation.goBack();
-      navigation.navigate("Profile");
-    } else {
-      Alert.alert("Fail");
+      if (error) {
+        Alert.alert("Fail");
+      } else {
+        navigation.goBack();
+        navigation.navigate("Profile");
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -137,25 +163,25 @@ export default ({ navigation, route }) => {
       <ScrollView>
         {loading ? (
           <Loader />
-        ) : data && data.findGgoBook && data.findGgoBook.id ? (
+        ) : findGgoBook && findGgoBook.id ? (
           <BookContainer>
             <BookCard>
               <Image
                 resizeMode="contain"
                 style={{ width: 100, height: 140 }}
-                key={data.findGgoBook.id}
-                source={{ uri: data.findGgoBook.coverLargeUrl }}
+                key={findGgoBook.id}
+                source={{ uri: findGgoBook.coverLargeUrl }}
                 borderTopLeftRadius={20}
                 borderBottomLeftRadius={20}
               />
               <InfoContainer>
-                <Title>{data.findGgoBook.title}</Title>
-                <Caption>{data.findGgoBook.author}</Caption>
-                <Caption>{data.findGgoBook.publisher}</Caption>
+                <Title>{findGgoBook.title}</Title>
+                <Caption>{findGgoBook.author}</Caption>
+                <Caption>{findGgoBook.publisher}</Caption>
               </InfoContainer>
             </BookCard>
             <Divider />
-            <Description>{data.findGgoBook.description}</Description>
+            <Description>{findGgoBook.description}</Description>
           </BookContainer>
         ) : (
           <View>
@@ -166,7 +192,7 @@ export default ({ navigation, route }) => {
       <ButtonContainer>
         {isLoading ? (
           <ActivityIndicator color="white" />
-        ) : data && data.findGgoBook && data.findGgoBook.id ? (
+        ) : findGgoBook && findGgoBook.id ? (
           <TouchableOpacity onPress={handleAddBook}>
             <Text>Add Book </Text>
           </TouchableOpacity>
