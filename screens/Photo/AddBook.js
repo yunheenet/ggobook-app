@@ -145,26 +145,19 @@ export default ({ navigation, route }) => {
         variables: { bookId: data.findGgoBook.id },
         update: (proxy, { data: { postBook } }) => {
           let data = proxy.readQuery({ query: ME });
-          // meQuery.me.books.push(postBook);
+          data.me.books = [postBook, ...data.me.books];
           proxy.writeQuery({
             query: ME,
-            data: {
-              ...data,
-              books: [postBook, ...data.me.books]
-            }
+            data
           });
 
           data = proxy.readQuery({ query: BOOK_FEED });
-          // bookFeedQuery.bookFeed.push(postBook);
+          data.bookFeed = [postBook, ...data.bookFeed];
           proxy.writeQuery({
             query: BOOK_FEED,
-            data: {
-              ...data,
-              bookFeed: [postBook, ...data.bookFeed]
-            }
+            data
           });
-        },
-        refetchQueries: () => [{ query: ME }, { query: BOOK_FEED }]
+        }
       });
 
       setIsLoading(false);
