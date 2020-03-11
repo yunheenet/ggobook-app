@@ -234,22 +234,37 @@ const Book = ({
       const { error } = await deleteBookMutation({
         variables: { id: bookId },
         update: proxy => {
-          const data = proxy.readQuery({ query: BOOK_FEED });
-          const idx = data.bookFeed.findIndex(item => {
+          // Book Feed
+          let data = proxy.readQuery({ query: BOOK_FEED });
+
+          let idx = data.bookFeed.findIndex(item => {
             return item.id === bookId;
           });
           if (idx > -1) {
-            data.bookFeed.slice(idx, 1);
+            data.bookFeed.splice(idx, 1);
           }
+
           proxy.writeQuery({ query: BOOK_FEED, data });
-        },
-        refetchQueries: () => [{ query: ME }, { query: BOOK_FEED }]
+
+          // User Book
+          data = proxy.readQuery({ query: ME });
+
+          idx = data.me.books.findIndex(item => {
+            return item.id === bookId;
+          });
+          if (idx > -1) {
+            data.me.books.splice(idx, 1);
+          }
+
+          proxy.writeQuery({ query: ME, data });
+        }
       });
 
       if (error) {
         Alert.alert("Fail");
       } else {
         setLoading(false);
+        toggleDeleteBookModal();
         navigation.goBack();
       }
     } catch (e) {
