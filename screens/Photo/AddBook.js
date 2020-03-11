@@ -30,19 +30,12 @@ const POST_BOOK = gql`
       caption
       data {
         id
-        isbn
         title
         author
-        publisher
-        description
         coverSmallUrl
         coverLargeUrl
       }
       createdAt
-      memos {
-        id
-        text
-      }
       user {
         id
         avatar
@@ -74,6 +67,7 @@ const BOOK_FEED = gql`
         id
         title
         author
+        coverSmallUrl
         coverLargeUrl
       }
       createdAt
@@ -145,11 +139,9 @@ const Description = styled.Text`
 export default ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    loading,
-    data: { findGgoBook }
-  } = useQuery(FIND_GGOBOOK, {
-    variables: { isbn: route.params.data }
+  const { loading, data } = useQuery(FIND_GGOBOOK, {
+    variables: { isbn: route.params.data },
+    fetchPolicy: "network-only"
   });
 
   const [postBookMutation] = useMutation(POST_BOOK);
@@ -159,15 +151,15 @@ export default ({ navigation, route }) => {
 
     try {
       const { error } = await postBookMutation({
-        variables: { bookId: findGgoBook.id },
+        variables: { bookId: data.findGgoBook.id },
         update: (proxy, { data: { postBook } }) => {
-          let data = proxy.readQuery({ query: ME });
-          data.me.books.push(postBook);
-          proxy.writeQuery({ query: ME, data });
+          const meQuery = proxy.readQuery({ query: ME });
+          meQuery.me.books.push(postBook);
+          proxy.writeQuery({ query: ME, meQuery });
 
-          data = proxy.readQuery({ query: BOOK_FEED });
-          data.bookFeed.push(postBook);
-          proxy.writeQuery({ query: BOOK_FEED, data });
+          const bookFeedQuery = proxy.readQuery({ query: BOOK_FEED });
+          bookFeedQuery.bookFeed.push(postBook);
+          proxy.writeQuery({ query: BOOK_FEED, bookFeedQuery });
         },
         refetchQueries: () => [{ query: ME }, { query: BOOK_FEED }]
       });
@@ -193,25 +185,25 @@ export default ({ navigation, route }) => {
     <View>
       {loading ? (
         <Loader />
-      ) : findGgoBook && findGgoBook.id ? (
+      ) : data && data.findGgoBook && data.findGgoBook.id ? (
         <BookContainer>
           <BookCard>
             <Image
               resizeMode="contain"
               style={{ width: 100, height: 140 }}
-              key={findGgoBook.id}
-              source={{ uri: findGgoBook.coverLargeUrl }}
+              key={data.findGgoBook.id}
+              source={{ uri: data.findGgoBook.coverLargeUrl }}
               borderTopLeftRadius={20}
               borderBottomLeftRadius={20}
             />
             <InfoContainer>
-              <Title>{findGgoBook.title}</Title>
-              <Caption>{findGgoBook.author}</Caption>
-              <Caption>{findGgoBook.publisher}</Caption>
+              <Title>{data.findGgoBook.title}</Title>
+              <Caption>{data.findGgoBook.author}</Caption>
+              <Caption>{data.findGgoBook.publisher}</Caption>
             </InfoContainer>
           </BookCard>
           <Divider />
-          <Description>{findGgoBook.description}</Description>
+          <Description>{data.findGgoBook.description}</Description>
         </BookContainer>
       ) : (
         <View>
@@ -221,7 +213,7 @@ export default ({ navigation, route }) => {
       <ButtonContainer>
         {isLoading ? (
           <ActivityIndicator color="white" />
-        ) : findGgoBook && findGgoBook.id ? (
+        ) : data && data.findGgoBook && data.findGgoBook.id ? (
           <TouchableOpacity onPress={handleAddBook}>
             <Text>Add Book </Text>
           </TouchableOpacity>
