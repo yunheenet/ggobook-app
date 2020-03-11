@@ -7,7 +7,9 @@ import {
   FlatList,
   ActivityIndicator,
   SafeAreaView,
-  Alert
+  Alert,
+  KeyboardAvoidingView,
+  Keyboard
 } from "react-native";
 import Modal from "react-native-modal";
 import { withNavigation } from "@react-navigation/compat";
@@ -22,6 +24,7 @@ import useInput from "../hooks/useInput";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { USER_FRAGMENT } from "../fragments";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const DELETE_BOOK = gql`
   mutation deleteBook($id: String!) {
@@ -234,29 +237,30 @@ const Book = ({
       const { error } = await deleteBookMutation({
         variables: { id: bookId },
         update: proxy => {
-          // Book Feed
-          let data = proxy.readQuery({ query: BOOK_FEED });
+          try {
+            // TODO: 테스트시 선행되는 캐쉬 업데이트는 실패하고 후행하는 캐쉬 업데이트만 성공(순서 바꿔도 후행만 성공)
+            // Book Feed
+            let data = proxy.readQuery({ query: BOOK_FEED });
+            let idx = data.bookFeed.findIndex(item => {
+              return item.id === bookId;
+            });
+            if (idx > -1) {
+              data.bookFeed.splice(idx, 1);
+            }
+            proxy.writeQuery({ query: BOOK_FEED, data });
 
-          let idx = data.bookFeed.findIndex(item => {
-            return item.id === bookId;
-          });
-          if (idx > -1) {
-            data.bookFeed.splice(idx, 1);
+            // User Book
+            data = proxy.readQuery({ query: ME });
+            idx = data.me.books.findIndex(item => {
+              return item.id === bookId;
+            });
+            if (idx > -1) {
+              data.me.books.splice(idx, 1);
+            }
+            proxy.writeQuery({ query: ME, data });
+          } catch (error) {
+            console.log(error);
           }
-
-          proxy.writeQuery({ query: BOOK_FEED, data });
-
-          // User Book
-          data = proxy.readQuery({ query: ME });
-
-          idx = data.me.books.findIndex(item => {
-            return item.id === bookId;
-          });
-          if (idx > -1) {
-            data.me.books.splice(idx, 1);
-          }
-
-          proxy.writeQuery({ query: ME, data });
         }
       });
 
@@ -356,7 +360,10 @@ const Book = ({
   };
 
   return (
-    <View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={{ flex: 1 }}
+    >
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={() => {
@@ -370,6 +377,8 @@ const Book = ({
           multiline={true}
           textAlignVertical={"top"}
           placeholderTextColor={styles.lightGreyColor}
+          autoFocus={true}
+          autoCorrect={false}
         />
         {
           <Button disabled={loading} onPress={() => handleAddMemo(note.value)}>
@@ -384,7 +393,14 @@ const Book = ({
         }}
       >
         <DeleteButton disabled={loading} onPress={handleDeleteMemo}>
-          {loading ? <ActivityIndicator color="white" /> : <Text>Delete </Text>}
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Ionicons
+              size={24}
+              name={Platform.OS === "ios" ? "ios-trash" : "md-trash"}
+            />
+          )}
         </DeleteButton>
         <NoteModal
           onChangeText={note.onChange}
@@ -392,6 +408,8 @@ const Book = ({
           multiline={true}
           textAlignVertical={"top"}
           placeholderTextColor={styles.lightGreyColor}
+          autoFocus={true}
+          autoCorrect={false}
         />
         <Button disabled={loading} onPress={() => handleEditMemo(note.value)}>
           {loading ? <ActivityIndicator color="white" /> : <Text>Edit </Text>}
@@ -477,7 +495,7 @@ const Book = ({
           </SafeAreaView>
         </NoteContainer>
       </BookContainer>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
