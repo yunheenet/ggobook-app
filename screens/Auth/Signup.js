@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
+import {
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
+  KeyboardAvoidingView
+} from "react-native";
 import styled from "styled-components";
 import { useMutation } from "@apollo/react-hooks";
 import { CREATE_ACCOUNT } from "./AuthQueries";
@@ -66,7 +71,10 @@ export default ({ navigation, route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View>
+      <KeyboardAvoidingView
+        style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
+        behavior="padding"
+      >
         <AuthInput
           {...fNameInput}
           placeholder="First name"
@@ -91,7 +99,7 @@ export default ({ navigation, route }) => {
           autoCorrect={false}
         />
         <AuthButton loading={loading} onPress={handleSingup} text="Sign up" />
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
