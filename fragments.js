@@ -31,6 +31,7 @@ export const POST_FRAGMENT = gql`
 export const BOOK_FRAGMENT = gql`
   fragment BookParts on Book {
     id
+    caption
     data {
       id
       isbn

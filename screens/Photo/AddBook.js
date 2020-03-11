@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import { USER_FRAGMENT } from "../../fragments";
+import { USER_FRAGMENT, BOOK_FRAGMENT } from "../../fragments";
 import styled from "styled-components";
 import styles from "../../styles";
 import constants from "../../constants";
@@ -26,16 +26,7 @@ const ME = gql`
 const POST_BOOK = gql`
   mutation postBook($bookId: String!) {
     postBook(bookId: $bookId) {
-      id
-      caption
-      data {
-        id
-        title
-        author
-        coverSmallUrl
-        coverLargeUrl
-      }
-      createdAt
+      ...BookParts
       user {
         id
         avatar
@@ -43,6 +34,7 @@ const POST_BOOK = gql`
       }
     }
   }
+  ${BOOK_FRAGMENT}
 `;
 
 const FIND_GGOBOOK = gql`
@@ -67,7 +59,6 @@ const BOOK_FEED = gql`
         id
         title
         author
-        coverSmallUrl
         coverLargeUrl
       }
       createdAt
@@ -153,13 +144,25 @@ export default ({ navigation, route }) => {
       const { error } = await postBookMutation({
         variables: { bookId: data.findGgoBook.id },
         update: (proxy, { data: { postBook } }) => {
-          const meQuery = proxy.readQuery({ query: ME });
-          meQuery.me.books.push(postBook);
-          proxy.writeQuery({ query: ME, meQuery });
+          let data = proxy.readQuery({ query: ME });
+          // meQuery.me.books.push(postBook);
+          proxy.writeQuery({
+            query: ME,
+            data: {
+              ...data,
+              books: [postBook, ...data.me.books]
+            }
+          });
 
-          const bookFeedQuery = proxy.readQuery({ query: BOOK_FEED });
-          bookFeedQuery.bookFeed.push(postBook);
-          proxy.writeQuery({ query: BOOK_FEED, bookFeedQuery });
+          data = proxy.readQuery({ query: BOOK_FEED });
+          // bookFeedQuery.bookFeed.push(postBook);
+          proxy.writeQuery({
+            query: BOOK_FEED,
+            data: {
+              ...data,
+              bookFeed: [postBook, ...data.bookFeed]
+            }
+          });
         },
         refetchQueries: () => [{ query: ME }, { query: BOOK_FEED }]
       });
